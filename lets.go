@@ -35,7 +35,7 @@ const I = `
 0100
 0100
 `
-const B = `
+const O = `
 1100
 1100
 0000
@@ -48,6 +48,7 @@ const L = `
 0110
 0000
 `
+
 const J = `
 0100
 0200
@@ -60,7 +61,7 @@ var Shapes = [...]string{
 	Z,
 	T,
 	I,
-	B,
+	O,
 	L,
 	J,
 }
