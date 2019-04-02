@@ -8,6 +8,9 @@ import (
 const X = 11
 const Y = 23
 
+const X_Start = 3
+const X_Shape = 4
+
 const S = `
 0110
 1200
@@ -69,29 +72,58 @@ var Shapes = [...]string{
 type Block struct {
 	X int
 	Y int
-	Shape string
+	Cells [16]Cell
+}
+
+type Cell struct {
+	Filled bool
 }
 
 // todo :
-func NewBlock() *Block {
+func NewBlock(shape string) *Block {
 	block := new(Block)
+	block.X = X_Start
+
+	i := 0
+	for _, c := range shape {
+		switch c {
+		case '2':
+			fallthrough
+		case '1':
+			block.Cells[i].Filled = true
+			fallthrough
+		case '0':
+			i++
+		}
+	}
+
 	return block
 }
 
-func RandomBlock(block *Block) *Block {
+func RandomShape() string {
 	i := rand.Uint32() % uint32(len(Shapes))
-	block.Shape = Shapes[i]
-
-	return block
+	return Shapes[i]
 }
 
 func NewRandomBlock() *Block {
-	block := RandomBlock(NewBlock())
-
+	block := NewBlock(RandomShape())
 	return block
 }
 
 func main() {
 	block := NewRandomBlock()
-	fmt.Println(block.Shape)
+	i := 0
+	for _, c := range block.Cells {
+		if i % X_Shape == 0 {
+			fmt.Print("\n")
+		}
+
+		if c.Filled {
+			fmt.Printf("██")
+		} else {
+			fmt.Printf("  ")
+		}
+
+		i++
+	}
 }
