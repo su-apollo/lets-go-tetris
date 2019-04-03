@@ -1,4 +1,4 @@
-package main
+package tetris
 
 const GroundX = 11
 const GroundY = 23
@@ -11,9 +11,9 @@ const (
 
 type Game struct {
 	State int
-	Now *Block
-	Next *Block
-	Back *Ground
+	Now   *Block
+	Next  *Block
+	Back  *Ground
 }
 
 func NewGame() *Game {
