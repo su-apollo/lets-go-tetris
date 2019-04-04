@@ -1,4 +1,4 @@
-package main
+package tetris
 
 import (
 	"fmt"
@@ -67,8 +67,8 @@ var Shapes = [...]string{
 }
 
 type Block struct {
-	X int
-	Y int
+	X     int
+	Y     int
 	Cells [16]Cell
 }
 
@@ -105,7 +105,7 @@ func NewRandomBlock() *Block {
 func (block *Block) Draw() {
 	i := 0
 	for _, c := range block.Cells {
-		if i % ShapeX == 0 {
+		if i%ShapeX == 0 {
 			fmt.Print("\n")
 		}
 
