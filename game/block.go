@@ -69,9 +69,11 @@ var shapes = []string{
 	J,
 }
 
+type cell bool
+
 type block struct {
 	x, y  int
-	cells [shapeX * shapeY]cell
+	cells []cell
 }
 
 func randomShape() string {
@@ -86,13 +88,14 @@ func NewRandomBlock() *block {
 }
 
 func (b *block) init(shape string) {
+	b.cells = make([]cell, shapeX*shapeY)
 	i := 0
 	for _, c := range shape {
 		switch c {
 		case '2':
 			fallthrough
 		case '1':
-			b.cells[i].filled = true
+			b.cells[i] = true
 			fallthrough
 		case '0':
 			i++
@@ -102,12 +105,12 @@ func (b *block) init(shape string) {
 
 func (b *block) draw() {
 	i := 0
-	for _, c := range b.cells {
+	for _, cell := range b.cells {
 		if i%shapeX == 0 {
 			fmt.Print("\n")
 		}
 
-		if c.filled {
+		if cell {
 			fmt.Printf("██")
 		} else {
 			fmt.Printf("  ")
