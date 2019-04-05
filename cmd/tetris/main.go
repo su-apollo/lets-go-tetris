@@ -1,8 +1,10 @@
 package main
 
-import "lets-go-tetris/tetris"
+import "lets-go-tetris/game"
 
 func main() {
-	game := tetris.NewGame()
-	game.Draw()
+	g := game.New(
+		game.Option{X: 11, Y: 23},
+	)
+	g.Draw()
 }
