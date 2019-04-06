@@ -7,14 +7,14 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("block 초기화 성공 테스트", func() {
+var _ = Describe("mino 초기화 성공 테스트", func() {
 	type testData struct {
 		input    string
 		expected []cell
 	}
 
 	DescribeTable("테스트 케이스", func(d testData) {
-		b := block{}
+		b := mino{}
 		b.init(d.input)
 		actual := b.cells
 		diff := deep.Equal(actual, d.expected)
