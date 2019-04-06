@@ -3,7 +3,6 @@ package game
 import (
 	"github.com/veandco/go-sdl2/sdl"
 	"math/rand"
-	"time"
 )
 
 const startX = 3
@@ -88,13 +87,13 @@ type mino struct {
 	color uint32
 }
 
-func random() uint32 {
-	rand.Seed(time.Now().UnixNano())
+func random(seed int64) uint32 {
+	rand.Seed(seed)
 	return rand.Uint32() % uint32(len(shapes))
 }
 
-func NewRandomMino() *mino {
-	i := random()
+func NewRandomMino(seed int64) *mino {
+	i := random(seed)
 	b := &mino{x: startX, color: colors[i]}
 	b.init(shapes[i])
 	return b
@@ -116,12 +115,12 @@ func (m *mino) init(shape string) {
 	}
 }
 
-func (m *mino) draw(s *sdl.Surface, c int) {
+func (m *mino) draw(s *sdl.Surface, cellSize int, addX int, addY int) {
 	var x, y = 0, 0
 
 	for _, cell := range m.cells {
 		if cell {
-			r := sdl.Rect{X: int32(x*c), Y: int32(y*c), W: int32(c), H: int32(c)}
+			r := sdl.Rect{X: int32((x+addX)*cellSize), Y: int32((y+addY)*cellSize), W: int32(cellSize), H: int32(cellSize)}
 			_ = s.FillRect(&r, m.color)
 		}
 

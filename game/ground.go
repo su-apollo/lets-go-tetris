@@ -20,14 +20,14 @@ func (g *ground) reset() {
 	g.cells = make([]cell, g.x*g.y)
 }
 
-func (g *ground) draw(s *sdl.Surface, c int) {
+func (g *ground) draw(s *sdl.Surface, cellSize int) {
 	var x, y = 0, 0
 
 	for i, cell := range g.cells {
 		if cell {
 
 		} else {
-			r := sdl.Rect{X: int32(x*c), Y: int32(y*c), W: int32(c), H: int32(c)}
+			r := sdl.Rect{X: int32(x*cellSize), Y: int32(y*cellSize), W: int32(cellSize), H: int32(cellSize)}
 			_ = s.FillRect(&r, tileColors[i%len(tileColors)])
 		}
 

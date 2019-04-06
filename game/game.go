@@ -2,6 +2,7 @@ package game
 
 import (
 	"github.com/veandco/go-sdl2/sdl"
+	"time"
 )
 
 type State int
@@ -29,8 +30,8 @@ func New(opt Option) *Game {
 	g.reset()
 	return &Game{
 		State:		Playing,
-		Now:		NewRandomMino(),
-		Next:		NewRandomMino(),
+		Now:		NewRandomMino(time.Now().UnixNano()),
+		Next:		NewRandomMino(time.Now().UnixNano() + 1),
 		Back:		g,
 		CellSize:	opt.CellSize,
 	}
@@ -42,7 +43,7 @@ func (game *Game) Run() {
 	}
 	defer sdl.Quit()
 
-	width := int32(game.Back.x * game.CellSize)
+	width := int32((game.Back.x + shapeX) * game.CellSize)
 	height := int32(game.Back.y * game.CellSize)
 	window, err := sdl.CreateWindow("lets go", sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED, width, height, sdl.WINDOW_SHOWN)
 	if err != nil {
@@ -77,7 +78,8 @@ func (game *Game) Run() {
 
 func (game *Game) draw(s *sdl.Surface) {
 	game.Back.draw(s, game.CellSize)
-	game.Now.draw(s, game.CellSize)
+	game.Now.draw(s, game.CellSize, 0, 0)
+	game.Next.draw(s, game.CellSize, game.Back.x, 0)
 }
 
 func (game *Game) handleKey(k sdl.Keycode) {
