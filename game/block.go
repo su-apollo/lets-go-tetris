@@ -1,12 +1,15 @@
-package tetris
+package game
 
 import (
 	"fmt"
 	"math/rand"
 )
 
-const StartX = 3
-const ShapeX = 4
+const startX = 3
+const (
+	shapeX = 4
+	shapeY = 4
+)
 
 const S = `
 0110
@@ -56,7 +59,7 @@ const J = `
 0000
 `
 
-var Shapes = [...]string{
+var shapes = []string{
 	S,
 	Z,
 	T,
@@ -66,50 +69,48 @@ var Shapes = [...]string{
 	J,
 }
 
-type Block struct {
-	X     int
-	Y     int
-	Cells [16]Cell
+type cell bool
+
+type block struct {
+	x, y  int
+	cells []cell
 }
 
-func NewBlock(shape string) *Block {
-	block := new(Block)
-	block.X = StartX
+func randomShape() string {
+	i := rand.Uint32() % uint32(len(shapes))
+	return shapes[i]
+}
 
+func NewRandomBlock() *block {
+	b := &block{x: startX}
+	b.init(randomShape())
+	return b
+}
+
+func (b *block) init(shape string) {
+	b.cells = make([]cell, shapeX*shapeY)
 	i := 0
 	for _, c := range shape {
 		switch c {
 		case '2':
 			fallthrough
 		case '1':
-			block.Cells[i].Filled = true
+			b.cells[i] = true
 			fallthrough
 		case '0':
 			i++
 		}
 	}
-
-	return block
 }
 
-func RandomShape() string {
-	i := rand.Uint32() % uint32(len(Shapes))
-	return Shapes[i]
-}
-
-func NewRandomBlock() *Block {
-	block := NewBlock(RandomShape())
-	return block
-}
-
-func (block *Block) Draw() {
+func (b *block) draw() {
 	i := 0
-	for _, c := range block.Cells {
-		if i%ShapeX == 0 {
+	for _, cell := range b.cells {
+		if i%shapeX == 0 {
 			fmt.Print("\n")
 		}
 
-		if c.Filled {
+		if cell {
 			fmt.Printf("██")
 		} else {
 			fmt.Printf("  ")
