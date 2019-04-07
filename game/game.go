@@ -18,22 +18,22 @@ type Option struct {
 }
 
 type Game struct {
-	State		State
-	Now			*mino
-	Next		*mino
-	Back		*ground
-	CellSize	int
+	State    State
+	Now      *mino
+	Next     *mino
+	Back     *ground
+	CellSize int
 }
 
 func New(opt Option) *Game {
 	g := &ground{opt.X, opt.Y, nil}
 	g.reset()
 	return &Game{
-		State:		Playing,
-		Now:		NewRandomMino(time.Now().UnixNano()),
-		Next:		NewRandomMino(time.Now().UnixNano() + 1),
-		Back:		g,
-		CellSize:	opt.CellSize,
+		State:    Playing,
+		Now:      NewRandomMino(time.Now().UnixNano()),
+		Next:     NewRandomMino(time.Now().UnixNano() + 1),
+		Back:     g,
+		CellSize: opt.CellSize,
 	}
 }
 
@@ -62,7 +62,7 @@ func (game *Game) Run() {
 		window.UpdateSurface()
 
 		for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
-			switch t:= event.(type) {
+			switch t := event.(type) {
 			case *sdl.QuitEvent:
 				running = false
 				break
