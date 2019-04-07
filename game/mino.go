@@ -120,7 +120,7 @@ func (m *mino) draw(s *sdl.Surface, cellSize int, addX int, addY int) {
 
 	for _, cell := range m.cells {
 		if cell {
-			r := sdl.Rect{X: int32((x+addX)*cellSize), Y: int32((y+addY)*cellSize), W: int32(cellSize), H: int32(cellSize)}
+			r := sdl.Rect{X: int32((x + addX) * cellSize), Y: int32((y + addY) * cellSize), W: int32(cellSize), H: int32(cellSize)}
 			_ = s.FillRect(&r, m.color)
 		}
 

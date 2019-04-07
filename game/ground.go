@@ -9,8 +9,6 @@ var tileColors = []uint32{
 	0xffeaeaea,
 }
 
-
-
 type ground struct {
 	x, y  int
 	cells []cell
@@ -27,7 +25,7 @@ func (g *ground) draw(s *sdl.Surface, cellSize int) {
 		if cell {
 
 		} else {
-			r := sdl.Rect{X: int32(x*cellSize), Y: int32(y*cellSize), W: int32(cellSize), H: int32(cellSize)}
+			r := sdl.Rect{X: int32(x * cellSize), Y: int32(y * cellSize), W: int32(cellSize), H: int32(cellSize)}
 			_ = s.FillRect(&r, tileColors[i%len(tileColors)])
 		}
 
