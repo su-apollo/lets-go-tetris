@@ -18,3 +18,4 @@ SDL2-devel-2.x.x-mingw.tar.gz
 * install gcc by scoop
 > $ scoop install gcc   
 * copy all files from SDL2-2.x.x/x86_64-w64-mingw32/lib/ to $(scoop path)/apps/gcc/current/x86_64-w64-mingw32/lib
+> CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc GOOS=windows GOARCH=amd64 go [command] -tags static -ldflags "-s -w"
