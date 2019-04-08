@@ -2,6 +2,7 @@ package game
 
 import (
 	"github.com/veandco/go-sdl2/sdl"
+	"lets-go-tetris/option"
 	"time"
 )
 
@@ -10,12 +11,8 @@ type State int
 const (
 	Playing State = iota
 	Paused
-	GameOver
+	Over
 )
-
-type Option struct {
-	X, Y, CellSize int
-}
 
 type Game struct {
 	State    State
@@ -25,7 +22,7 @@ type Game struct {
 	CellSize int
 }
 
-func New(opt Option) *Game {
+func New(opt option.Opt) *Game {
 	g := &ground{opt.X, opt.Y, nil}
 	g.reset()
 	return &Game{
@@ -90,7 +87,7 @@ func (game *Game) handleKey(k sdl.Keycode) {
 	case Paused:
 		game.handleKeyPaused(k)
 		break
-	case GameOver:
+	case Over:
 		game.handleKeyGameOver(k)
 		break
 	}
