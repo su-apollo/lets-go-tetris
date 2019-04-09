@@ -13,7 +13,7 @@ before_install:
 script:
 - make lint
 - make test
-- sonar-scanner -Dsonar.organization=$SONAR_ORGANIZATION -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN
+- sonar-scanner
 after_script:
 - make cover
 addons:
