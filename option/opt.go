@@ -1,6 +1,7 @@
 package option
 
 type Opt struct {
-	X, Y, CellSize int
-	Title          string
+	X, Y     int32
+	CellSize int32
+	Title    string
 }

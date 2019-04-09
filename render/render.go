@@ -6,13 +6,23 @@ import (
 	"lets-go-tetris/option"
 )
 
+type Info struct {
+	PosX, PosY int32
+
+	Color uint32
+}
+
+type Renderer interface {
+	Render(Object)
+	Update() ([]sdl.Keycode, bool)
+}
+
 type Object interface {
-	Render() bool
-	Next() bool
+	RenderInfo() []Info
 }
 
 func NewWrapper(opt option.Opt) (*SDLWrapper, error) {
-	wrapper := &SDLWrapper{opt, nil, nil, nil}
+	wrapper := &SDLWrapper{opt: opt}
 
 	err := wrapper.init()
 	return wrapper, err
@@ -26,6 +36,7 @@ type SDLWrapper struct {
 	deferFn   []fn
 	destroyFn []fn
 
+	window  *sdl.Window
 	surface *sdl.Surface
 }
 
@@ -42,8 +53,8 @@ func (wrapper *SDLWrapper) init() error {
 	}
 	wrapper.pushFn(sdl.Quit)
 
-	width := (wrapper.opt.X + shapeX) * wrapper.opt.CellSize
-	height := wrapper.opt.Y * wrapper.opt.CellSize
+	width := int32(wrapper.opt.X+shapeX) * wrapper.opt.CellSize
+	height := int32(wrapper.opt.Y) * wrapper.opt.CellSize
 	window, err := sdl.CreateWindow(
 		"lets go",
 		sdl.WINDOWPOS_UNDEFINED,
@@ -56,6 +67,7 @@ func (wrapper *SDLWrapper) init() error {
 		return err
 	}
 	wrapper.pushFn(func() { window.Destroy() })
+	wrapper.window = window
 
 	surface, err := window.GetSurface()
 	if err != nil {
@@ -64,7 +76,7 @@ func (wrapper *SDLWrapper) init() error {
 	wrapper.surface = surface
 
 	wrapper.destroyFn = wrapper.deferFn
-	wrapper.deferFn = wrapper.deferFn[:]
+	wrapper.deferFn = nil
 	return nil
 }
 
@@ -78,4 +90,33 @@ func (wrapper *SDLWrapper) Close() {
 	for _, f := range wrapper.destroyFn {
 		f()
 	}
+}
+
+func (wrapper *SDLWrapper) Render(o Object) {
+	for _, info := range o.RenderInfo() {
+		r := sdl.Rect{
+			X: info.PosX * wrapper.opt.CellSize,
+			Y: info.PosY * wrapper.opt.CellSize,
+			W: wrapper.opt.CellSize,
+			H: wrapper.opt.CellSize,
+		}
+		_ = wrapper.surface.FillRect(&r, info.Color)
+	}
+}
+
+func (wrapper *SDLWrapper) Update() ([]sdl.Keycode, bool) {
+	wrapper.window.UpdateSurface()
+
+	var keys []sdl.Keycode
+	for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
+		switch t := event.(type) {
+		case *sdl.QuitEvent:
+			return nil, false
+		case *sdl.KeyboardEvent:
+			if event.GetType() == sdl.KEYDOWN {
+				keys = append(keys, t.Keysym.Sym)
+			}
+		}
+	}
+	return keys, true
 }

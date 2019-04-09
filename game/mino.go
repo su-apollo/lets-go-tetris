@@ -1,7 +1,7 @@
 package game
 
 import (
-	"github.com/veandco/go-sdl2/sdl"
+	"lets-go-tetris/render"
 	"math/rand"
 )
 
@@ -81,10 +81,19 @@ var colors = []uint32{
 
 type cell bool
 
+const (
+	Prepare State = iota
+	Activate
+	Stoped
+)
+
 type mino struct {
-	x, y  int
+	x, y  int32
 	cells []cell
 	color uint32
+
+	offset int32
+	state  State
 }
 
 func random(seed int64) uint32 {
@@ -99,6 +108,26 @@ func NewRandomMino(seed int64) *mino {
 	return b
 }
 
+func (m *mino) RenderInfo() []render.Info {
+	var infos []render.Info
+
+	var x, y int32 = 0, 0
+	for _, cell := range m.cells {
+		if cell {
+			infos = append(infos, render.Info{
+				PosX: x + m.offset, PosY: y, Color: m.color,
+			})
+		}
+		x++
+		if x%shapeX == 0 {
+			x = 0
+			y++
+		}
+	}
+
+	return infos
+}
+
 func (m *mino) init(shape string) {
 	m.cells = make([]cell, shapeX*shapeY)
 	i := 0
@@ -111,23 +140,6 @@ func (m *mino) init(shape string) {
 			fallthrough
 		case '0':
 			i++
-		}
-	}
-}
-
-func (m *mino) draw(s *sdl.Surface, cellSize int, addX int, addY int) {
-	var x, y = 0, 0
-
-	for _, cell := range m.cells {
-		if cell {
-			r := sdl.Rect{X: int32((x + addX) * cellSize), Y: int32((y + addY) * cellSize), W: int32(cellSize), H: int32(cellSize)}
-			_ = s.FillRect(&r, m.color)
-		}
-
-		x++
-		if x%shapeX == 0 {
-			x = 0
-			y++
 		}
 	}
 }
