@@ -3,6 +3,7 @@ package game
 import (
 	"github.com/veandco/go-sdl2/sdl"
 	"lets-go-tetris/option"
+	"lets-go-tetris/render"
 	"time"
 )
 
@@ -15,72 +16,50 @@ const (
 )
 
 type Game struct {
-	State    State
-	Now      *mino
-	Next     *mino
-	Back     *ground
-	CellSize int
+	state State
+	now   *mino
+	next  *mino
+	back  *ground
+
+	render render.Renderer
 }
 
-func New(opt option.Opt) *Game {
+func New(opt option.Opt, r *render.SDLWrapper) *Game {
 	g := &ground{opt.X, opt.Y, nil}
 	g.reset()
+
+	next := NewRandomMino(time.Now().UnixNano() + 1)
+	next.state = Prepare
+	next.offset = opt.X
+
 	return &Game{
-		State:    Playing,
-		Now:      NewRandomMino(time.Now().UnixNano()),
-		Next:     NewRandomMino(time.Now().UnixNano() + 1),
-		Back:     g,
-		CellSize: opt.CellSize,
+		state:  Playing,
+		now:    NewRandomMino(time.Now().UnixNano()),
+		next:   next,
+		back:   g,
+		render: r,
 	}
 }
 
 func (game *Game) Run() {
-	if err := sdl.Init(sdl.INIT_EVERYTHING); err != nil {
-		panic(err)
-	}
-	defer sdl.Quit()
+	for {
+		game.render.Render(game.back)
+		game.render.Render(game.now)
+		game.render.Render(game.next)
 
-	width := int32((game.Back.x + shapeX) * game.CellSize)
-	height := int32(game.Back.y * game.CellSize)
-	window, err := sdl.CreateWindow("lets go", sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED, width, height, sdl.WINDOW_SHOWN)
-	if err != nil {
-		panic(err)
-	}
-	defer window.Destroy()
+		keys, ok := game.render.Update()
+		if !ok {
+			break
+		}
 
-	surface, err := window.GetSurface()
-	if err != nil {
-		panic(err)
-	}
-
-	running := true
-	for running {
-		game.draw(surface)
-		window.UpdateSurface()
-
-		for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
-			switch t := event.(type) {
-			case *sdl.QuitEvent:
-				running = false
-				break
-			case *sdl.KeyboardEvent:
-				if event.GetType() == sdl.KEYDOWN {
-					game.handleKey(t.Keysym.Sym)
-				}
-				break
-			}
+		for _, key := range keys {
+			game.handleKey(key)
 		}
 	}
 }
 
-func (game *Game) draw(s *sdl.Surface) {
-	game.Back.draw(s, game.CellSize)
-	game.Now.draw(s, game.CellSize, 0, 0)
-	game.Next.draw(s, game.CellSize, game.Back.x, 0)
-}
-
 func (game *Game) handleKey(k sdl.Keycode) {
-	switch game.State {
+	switch game.state {
 	case Playing:
 		game.handleKeyPlaying(k)
 		break
