@@ -78,15 +78,15 @@ func (wrapper *SDLWrapper) Close() {
 	}
 }
 
-func (wrapper *SDLWrapper) Render(o Object) {
-	for _, info := range o.RenderInfo() {
+func (wrapper *SDLWrapper) Render(info []Info) {
+	for _, i := range info {
 		r := sdl.Rect{
-			X: info.PosX * wrapper.opt.CellSize,
-			Y: info.PosY * wrapper.opt.CellSize,
+			X: i.PosX * wrapper.opt.CellSize,
+			Y: i.PosY * wrapper.opt.CellSize,
 			W: wrapper.opt.CellSize,
 			H: wrapper.opt.CellSize,
 		}
-		_ = wrapper.surface.FillRect(&r, info.Color)
+		_ = wrapper.surface.FillRect(&r, i.Color)
 	}
 }
 
