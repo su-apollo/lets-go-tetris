@@ -13,14 +13,11 @@ before_install:
 script:
 - make lint
 - make test
-- sonar-scanner
+- sonar-scanner -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN
 after_script:
 - make cover
 addons:
-  sonarcloud:
-    organization: "apollohpp-github"
-    token:
-      secure: $SONAR_TOKEN
+  sonarcloud: true
 env:
   global:
   - GO111MODULE=on
