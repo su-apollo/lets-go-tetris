@@ -8,7 +8,7 @@ import (
 
 func main() {
 	opt := option.Opt{X: 11, Y: 23, CellSize: 20, Title: "Lets go"}
-	r, err := render.NewWrapper(opt)
+	r, err := render.NewSDLWrapper(opt)
 	if err != nil {
 		panic(err)
 	}
