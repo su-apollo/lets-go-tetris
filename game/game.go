@@ -1,7 +1,7 @@
 package game
 
 import (
-	"github.com/veandco/go-sdl2/sdl"
+	"lets-go-tetris/event"
 	"lets-go-tetris/option"
 	"lets-go-tetris/render"
 	"time"
@@ -24,7 +24,7 @@ type Game struct {
 	render render.Renderer
 }
 
-func New(opt option.Opt, r *render.SDLWrapper) *Game {
+func New(opt option.Opt, r render.Renderer) *Game {
 	g := &ground{opt.X, opt.Y, nil}
 	g.reset()
 
@@ -58,38 +58,35 @@ func (game *Game) Run() {
 	}
 }
 
-func (game *Game) handleKey(k sdl.Keycode) {
+func (game *Game) handleKey(msg event.Msg) {
 	switch game.state {
 	case Playing:
-		game.handleKeyPlaying(k)
+		game.handleKeyPlaying(msg)
 		break
 	case Paused:
-		game.handleKeyPaused(k)
+		game.handleKeyPaused(msg)
 		break
 	case Over:
-		game.handleKeyGameOver(k)
+		game.handleKeyGameOver(msg)
 		break
 	}
 }
 
-func (game *Game) handleKeyPlaying(k sdl.Keycode) {
-	switch k {
-	case sdl.K_LEFT, sdl.K_a, sdl.K_j:
-
-	case sdl.K_RIGHT, sdl.K_d, sdl.K_l:
-
-	case sdl.K_UP, sdl.K_w, sdl.K_i:
-
-	case sdl.K_DOWN, sdl.K_s, sdl.K_k, sdl.K_SPACE:
-
-	case sdl.K_ESCAPE:
-
-	case sdl.K_p:
+func (game *Game) handleKeyPlaying(msg event.Msg) {
+	switch msg.Key {
+	case event.Left:
+	case event.Right:
+	case event.Up:
+	case event.Down:
+	case event.Escape:
+	case event.Pause:
 	}
 }
 
-func (game *Game) handleKeyPaused(k sdl.Keycode) {
+func (game *Game) handleKeyPaused(msg event.Msg) {
+	panic("Not implemented")
 }
 
-func (game *Game) handleKeyGameOver(k sdl.Keycode) {
+func (game *Game) handleKeyGameOver(msg event.Msg) {
+	panic("Not implemented")
 }
