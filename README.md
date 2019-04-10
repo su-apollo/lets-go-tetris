@@ -1,7 +1,7 @@
 # Lets go tetris!
 
 [![Build Status](https://travis-ci.org/apollohpp/lets-go-tetris.svg?branch=master)](https://travis-ci.org/apollohpp/lets-go-tetris)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=apollohpp_lets-go-tetris&metric=alert_status)](https://sonarcloud.io/dashboard?id=apollohpp_lets-go-tetris)
+[![Quality Gate](https://sonar.team504.com/api/badges/gate?key=lets-go-tetris)](https://sonar.team504.com/dashboard?id=lets-go-tetris)
 [![Coverage Status](https://coveralls.io/repos/github/apollohpp/lets-go-tetris/badge.svg?branch=master)](https://coveralls.io/github/apollohpp/lets-go-tetris?branch=master)
 
 #### Requirement
