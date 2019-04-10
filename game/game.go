@@ -42,10 +42,15 @@ func New(opt option.Opt, r render.Renderer) *Game {
 }
 
 func (game *Game) Run() {
+	var info []render.Info
 	for {
-		game.render.Render(game.back)
-		game.render.Render(game.now)
-		game.render.Render(game.next)
+		info = info[:0]
+
+		info = append(info, game.back.RenderInfo()...)
+		info = append(info, game.now.RenderInfo()...)
+		info = append(info, game.next.RenderInfo()...)
+
+		game.render.Render(info)
 
 		keys, ok := game.render.Update()
 		if !ok {

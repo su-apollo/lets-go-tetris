@@ -11,7 +11,7 @@ type Info struct {
 }
 
 type Renderer interface {
-	Render(Object)
+	Render([]Info)
 	Update() ([]event.Msg, bool)
 }
 
