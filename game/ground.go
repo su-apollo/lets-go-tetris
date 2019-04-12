@@ -10,8 +10,8 @@ var tileColors = []uint32{
 }
 
 type ground struct {
-	x, y  int32
-	cells []cell
+	x, y   int32
+	cells  []cell
 	colors []uint32
 }
 
@@ -67,7 +67,7 @@ func (g *ground) collide(m *mino) bool {
 				return true
 			}
 
-			if g.cells[cy * g.x + cx] {
+			if g.cells[cy*g.x+cx] {
 				return true
 			}
 		}
@@ -88,8 +88,8 @@ func (g *ground) merge(m *mino) {
 			cx := m.x + x
 			cy := m.y + y
 
-			g.cells[cy * g.x + cx] = true
-			g.colors[cy * g.x + cx] = m.color
+			g.cells[cy*g.x+cx] = true
+			g.colors[cy*g.x+cx] = m.color
 		}
 
 		x++

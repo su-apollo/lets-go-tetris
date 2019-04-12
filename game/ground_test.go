@@ -15,4 +15,3 @@ var _ = XDescribe("mino wall kick 테스트", func() {
 
 var _ = XDescribe("ground tetris check 테스트", func() {
 })
-

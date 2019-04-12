@@ -62,9 +62,9 @@ var _ = XDescribe("mino 초기화 성공 테스트", func() {
 
 var _ = XDescribe("mino srs 테스트 (super rotate system)", func() {
 	type testData struct {
-		inputInit    	string
-		inputRotate		int
-		expected 		[]cell
+		inputInit   string
+		inputRotate int
+		expected    []cell
 	}
 
 	DescribeTable("테스트 케이스", func(d testData) {
@@ -85,27 +85,27 @@ var _ = XDescribe("mino srs 테스트 (super rotate system)", func() {
 			true, true, false,
 			false, true, true,
 		}}),
-		Entry("", testData{T, -2,[]cell{
+		Entry("", testData{T, -2, []cell{
 			false, false, false,
 			true, true, true,
 			false, true, false,
 		}}),
-		Entry("", testData{I, 16,[]cell{
+		Entry("", testData{I, 16, []cell{
 			false, false, false, false,
 			true, true, true, true,
 			false, false, false, false,
 			false, false, false, false,
 		}}),
-		Entry("", testData{O, -4,[]cell{
+		Entry("", testData{O, -4, []cell{
 			true, true,
 			true, true,
 		}}),
-		Entry("", testData{L, 7,[]cell{
+		Entry("", testData{L, 7, []cell{
 			true, true, false,
 			false, true, false,
 			false, true, false,
 		}}),
-		Entry("", testData{J, -17,[]cell{
+		Entry("", testData{J, -17, []cell{
 			false, true, false,
 			false, true, false,
 			true, true, false,
@@ -132,10 +132,10 @@ var _ = Describe("random 통제 테스트", func() {
 var _ = Describe("mino.RenderInfo() 함수가", func() {
 	It("렌더링 정보를 제대로 반환한다.", func() {
 		m := mino{
-			cells:  []cell{false, true, false, true},
-			color:  123,
-			x: 		1234,
-			y:		4321,
+			cells: []cell{false, true, false, true},
+			color: 123,
+			x:     1234,
+			y:     4321,
 		}
 		expected := []render.Info{
 			{PosX: 1 + 1234, PosY: 4321, Color: 123},
