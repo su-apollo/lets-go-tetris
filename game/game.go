@@ -1,7 +1,6 @@
 package game
 
 import (
-	"fmt"
 	"lets-go-tetris/event"
 	"lets-go-tetris/option"
 	"lets-go-tetris/render"
@@ -128,7 +127,7 @@ func (game *Game) updatePlaying(delta int64) {
 	game.stepTimer += delta
 	if game.stepTimer > game.speed() {
 		if game.back.step(game.now) {
-			_ := game.back.tetris()
+			_ = game.back.tetris()
 			//todo : score
 
 			game.now = game.next
@@ -149,5 +148,6 @@ func (game *Game) updateGameOver(delta int64) {
 }
 
 func (game *Game) speed() int64 {
+	// todo : game level
 	return 1000000000
 }

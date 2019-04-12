@@ -70,11 +70,12 @@ var _ = Describe("mino.RenderInfo() 함수가", func() {
 		m := mino{
 			cells:  []cell{false, true, false, true},
 			color:  123,
-			offset: 1234,
+			x: 		1234,
+			y:		4321,
 		}
 		expected := []render.Info{
-			{PosX: 1 + 1234, Color: 123},
-			{PosX: 3 + 1234, Color: 123},
+			{PosX: 1 + 1234, PosY: 4321, Color: 123},
+			{PosX: 3 + 1234, PosY: 4321, Color: 123},
 		}
 		actual := m.RenderInfo()
 		Expect(actual).Should(Equal(expected))
