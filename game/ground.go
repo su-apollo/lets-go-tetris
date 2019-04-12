@@ -5,13 +5,14 @@ import (
 )
 
 var tileColors = []uint32{
-	0xffdbdbdb,
-	0xffeaeaea,
+	0xff353535,
+	0xff5D5D5D,
 }
 
 type ground struct {
 	x, y  int32
 	cells []cell
+	colors []uint32
 }
 
 func (g *ground) RenderInfo() []render.Info {
@@ -22,6 +23,10 @@ func (g *ground) RenderInfo() []render.Info {
 		if !cell {
 			infos = append(infos, render.Info{
 				PosX: x, PosY: y, Color: tileColors[i%len(tileColors)],
+			})
+		} else {
+			infos = append(infos, render.Info{
+				PosX: x, PosY: y, Color: g.colors[i],
 			})
 		}
 		x++
@@ -36,6 +41,7 @@ func (g *ground) RenderInfo() []render.Info {
 
 func (g *ground) reset() {
 	g.cells = make([]cell, g.x*g.y)
+	g.colors = make([]uint32, g.x*g.y)
 }
 
 func (g *ground) step(m *mino) bool {
@@ -83,6 +89,7 @@ func (g *ground) merge(m *mino) {
 			cy := m.y + y
 
 			g.cells[cy * g.x + cx] = true
+			g.colors[cy * g.x + cx] = m.color
 		}
 
 		x++

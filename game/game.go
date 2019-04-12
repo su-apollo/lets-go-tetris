@@ -29,7 +29,7 @@ type Game struct {
 }
 
 func New(opt option.Opt, r render.Renderer) *Game {
-	g := &ground{opt.X, opt.Y, nil}
+	g := &ground{opt.X, opt.Y, nil, nil}
 	g.reset()
 
 	now := NewRandomMino(time.Now().UnixNano())
