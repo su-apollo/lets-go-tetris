@@ -16,35 +16,99 @@ var _ = Describe("mino 초기화 성공 테스트", func() {
 	}
 
 	DescribeTable("테스트 케이스", func(d testData) {
-		b := mino{}
-		b.init(d.input)
-		actual := b.cells
+		m := mino{}
+		m.init(d.input)
+		actual := m.cells
 		diff := deep.Equal(actual, d.expected)
 		Expect(diff).Should(BeNil())
 	},
 		Entry("", testData{S, []cell{
-			false, true, true, false,
-			true, true, false, false,
-			false, false, false, false,
-			false, false, false, false,
+			false, true, true,
+			true, true, false,
+			false, false, false,
 		}}),
 		Entry("", testData{Z, []cell{
-			true, true, false, false,
-			false, true, true, false,
-			false, false, false, false,
-			false, false, false, false,
+			true, true, false,
+			false, true, true,
+			false, false, false,
 		}}),
 		Entry("", testData{T, []cell{
-			false, true, false, false,
-			true, true, true, false,
-			false, false, false, false,
-			false, false, false, false,
+			false, true, false,
+			true, true, true,
+			false, false, false,
 		}}),
 		Entry("", testData{I, []cell{
 			false, true, false, false,
 			false, true, false, false,
 			false, true, false, false,
 			false, true, false, false,
+		}}),
+		Entry("", testData{O, []cell{
+			true, true,
+			true, true,
+		}}),
+		Entry("", testData{L, []cell{
+			false, false, true,
+			true, true, true,
+			false, false, false,
+		}}),
+		Entry("", testData{J, []cell{
+			true, false, false,
+			true, true, true,
+			false, false, false,
+		}}),
+	)
+})
+
+var _ = Describe("mino srs 테스트 (super rotate system)", func() {
+	type testData struct {
+		inputInit    	string
+		inputRotate		int
+		expected 		[]cell
+	}
+
+	DescribeTable("테스트 케이스", func(d testData) {
+		m := mino{}
+		m.init(d.inputInit)
+		m.rotate(d.inputRotate)
+		actual := m.cells
+		diff := deep.Equal(actual, d.expected)
+		Expect(diff).Should(BeNil())
+	},
+		Entry("", testData{S, -1, []cell{
+			true, false, false,
+			true, true, false,
+			false, true, false,
+		}}),
+		Entry("", testData{Z, 6, []cell{
+			false, false, false,
+			true, true, false,
+			false, true, true,
+		}}),
+		Entry("", testData{T, -2,[]cell{
+			false, false, false,
+			true, true, true,
+			false, true, false,
+		}}),
+		Entry("", testData{I, 16,[]cell{
+			false, false, false, false,
+			true, true, true, true,
+			false, false, false, false,
+			false, false, false, false,
+		}}),
+		Entry("", testData{O, -4,[]cell{
+			true, true,
+			true, true,
+		}}),
+		Entry("", testData{L, 7,[]cell{
+			true, true, false,
+			false, true, false,
+			false, true, false,
+		}}),
+		Entry("", testData{J, -17,[]cell{
+			false, true, false,
+			false, true, false,
+			true, true, false,
 		}}),
 	)
 })

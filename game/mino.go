@@ -133,3 +133,7 @@ func (m *mino) init(shape string) {
 		}
 	}
 }
+
+func (m *mino) rotate(r int) {
+
+}
