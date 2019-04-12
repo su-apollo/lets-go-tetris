@@ -5,7 +5,6 @@ import (
 	"math/rand"
 )
 
-const startX = 3
 const (
 	shapeX = 4
 	shapeY = 4
@@ -81,19 +80,10 @@ var colors = []uint32{
 
 type cell bool
 
-const (
-	Prepare State = iota
-	Activate
-	Stoped
-)
-
 type mino struct {
 	x, y  int32
 	cells []cell
 	color uint32
-
-	offset int32
-	state  State
 }
 
 func random(seed int64) uint32 {
@@ -103,7 +93,7 @@ func random(seed int64) uint32 {
 
 func NewRandomMino(seed int64) *mino {
 	i := random(seed)
-	b := &mino{x: startX, color: colors[i]}
+	b := &mino{color: colors[i]}
 	b.init(shapes[i])
 	return b
 }
@@ -115,7 +105,7 @@ func (m *mino) RenderInfo() []render.Info {
 	for _, cell := range m.cells {
 		if cell {
 			infos = append(infos, render.Info{
-				PosX: x + m.offset, PosY: y, Color: m.color,
+				PosX: m.x + x, PosY: m.y + y, Color: m.color,
 			})
 		}
 		x++

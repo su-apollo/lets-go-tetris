@@ -1,6 +1,7 @@
 package game
 
 import (
+	"fmt"
 	"lets-go-tetris/event"
 	"lets-go-tetris/option"
 	"lets-go-tetris/render"
@@ -15,6 +16,8 @@ const (
 	Over
 )
 
+const startX = 3
+
 type Game struct {
 	state State
 	now   *mino
@@ -22,19 +25,23 @@ type Game struct {
 	back  *ground
 
 	render render.Renderer
+
+	stepTimer int64
 }
 
 func New(opt option.Opt, r render.Renderer) *Game {
 	g := &ground{opt.X, opt.Y, nil}
 	g.reset()
 
+	now := NewRandomMino(time.Now().UnixNano())
+	now.x = startX
+
 	next := NewRandomMino(time.Now().UnixNano() + 1)
-	next.state = Prepare
-	next.offset = opt.X
+	next.x = opt.X
 
 	return &Game{
 		state:  Playing,
-		now:    NewRandomMino(time.Now().UnixNano()),
+		now:    now,
 		next:   next,
 		back:   g,
 		render: r,
@@ -43,6 +50,7 @@ func New(opt option.Opt, r render.Renderer) *Game {
 
 func (game *Game) Run() {
 	var info []render.Info
+	front := time.Now()
 	for {
 		info = info[:0]
 
@@ -60,6 +68,12 @@ func (game *Game) Run() {
 		for _, key := range keys {
 			game.handleKey(key)
 		}
+
+		now := time.Now()
+		delta := now.Sub(front)
+		front = now
+
+		game.update(delta.Nanoseconds())
 	}
 }
 
@@ -94,4 +108,46 @@ func (game *Game) handleKeyPaused(msg event.Msg) {
 
 func (game *Game) handleKeyGameOver(msg event.Msg) {
 	panic("Not implemented")
+}
+
+func (game *Game) update(delta int64) {
+	switch game.state {
+	case Playing:
+		game.updatePlaying(delta)
+		break
+	case Paused:
+		game.updatePaused(delta)
+		break
+	case Over:
+		game.updateGameOver(delta)
+		break
+	}
+}
+
+func (game *Game) updatePlaying(delta int64) {
+	game.stepTimer += delta
+	if game.stepTimer > game.speed() {
+		if game.back.step(game.now) {
+			_ := game.back.tetris()
+			//todo : score
+
+			game.now = game.next
+			game.now.x = startX
+			game.next = NewRandomMino(time.Now().UnixNano())
+			game.next.x = game.back.x
+		}
+		game.stepTimer = 0
+	}
+}
+
+func (game *Game) updatePaused(delta int64) {
+	panic("Not implemented")
+}
+
+func (game *Game) updateGameOver(delta int64) {
+	panic("Not implemented")
+}
+
+func (game *Game) speed() int64 {
+	return 1000000000
 }
