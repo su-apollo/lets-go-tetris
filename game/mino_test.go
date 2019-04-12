@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-var _ = Describe("mino 초기화 성공 테스트", func() {
+var _ = XDescribe("mino 초기화 성공 테스트", func() {
 	type testData struct {
 		input    string
 		expected []cell
@@ -60,7 +60,7 @@ var _ = Describe("mino 초기화 성공 테스트", func() {
 	)
 })
 
-var _ = Describe("mino srs 테스트 (super rotate system)", func() {
+var _ = XDescribe("mino srs 테스트 (super rotate system)", func() {
 	type testData struct {
 		inputInit    	string
 		inputRotate		int
