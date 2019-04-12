@@ -10,10 +10,11 @@ before_install:
   make
   sudo make install
   cd ..
+  chmod +x ./sonar.sh
 script:
 - make lint
 - make test
-- sonar-scanner -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN
+- ./sonar.sh
 after_script:
 - make cover
 addons:
