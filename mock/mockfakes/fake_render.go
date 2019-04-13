@@ -17,6 +17,16 @@ type FakeRender struct {
 	initReturnsOnCall map[int]struct {
 		result1 error
 	}
+	PollEventStub        func() mock.Event
+	pollEventMutex       sync.RWMutex
+	pollEventArgsForCall []struct {
+	}
+	pollEventReturns struct {
+		result1 mock.Event
+	}
+	pollEventReturnsOnCall map[int]struct {
+		result1 mock.Event
+	}
 	QuitStub        func()
 	quitMutex       sync.RWMutex
 	quitArgsForCall []struct {
@@ -77,6 +87,58 @@ func (fake *FakeRender) InitReturnsOnCall(i int, result1 error) {
 	}{result1}
 }
 
+func (fake *FakeRender) PollEvent() mock.Event {
+	fake.pollEventMutex.Lock()
+	ret, specificReturn := fake.pollEventReturnsOnCall[len(fake.pollEventArgsForCall)]
+	fake.pollEventArgsForCall = append(fake.pollEventArgsForCall, struct {
+	}{})
+	fake.recordInvocation("PollEvent", []interface{}{})
+	fake.pollEventMutex.Unlock()
+	if fake.PollEventStub != nil {
+		return fake.PollEventStub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	fakeReturns := fake.pollEventReturns
+	return fakeReturns.result1
+}
+
+func (fake *FakeRender) PollEventCallCount() int {
+	fake.pollEventMutex.RLock()
+	defer fake.pollEventMutex.RUnlock()
+	return len(fake.pollEventArgsForCall)
+}
+
+func (fake *FakeRender) PollEventCalls(stub func() mock.Event) {
+	fake.pollEventMutex.Lock()
+	defer fake.pollEventMutex.Unlock()
+	fake.PollEventStub = stub
+}
+
+func (fake *FakeRender) PollEventReturns(result1 mock.Event) {
+	fake.pollEventMutex.Lock()
+	defer fake.pollEventMutex.Unlock()
+	fake.PollEventStub = nil
+	fake.pollEventReturns = struct {
+		result1 mock.Event
+	}{result1}
+}
+
+func (fake *FakeRender) PollEventReturnsOnCall(i int, result1 mock.Event) {
+	fake.pollEventMutex.Lock()
+	defer fake.pollEventMutex.Unlock()
+	fake.PollEventStub = nil
+	if fake.pollEventReturnsOnCall == nil {
+		fake.pollEventReturnsOnCall = make(map[int]struct {
+			result1 mock.Event
+		})
+	}
+	fake.pollEventReturnsOnCall[i] = struct {
+		result1 mock.Event
+	}{result1}
+}
+
 func (fake *FakeRender) Quit() {
 	fake.quitMutex.Lock()
 	fake.quitArgsForCall = append(fake.quitArgsForCall, struct {
@@ -105,6 +167,8 @@ func (fake *FakeRender) Invocations() map[string][][]interface{} {
 	defer fake.invocationsMutex.RUnlock()
 	fake.initMutex.RLock()
 	defer fake.initMutex.RUnlock()
+	fake.pollEventMutex.RLock()
+	defer fake.pollEventMutex.RUnlock()
 	fake.quitMutex.RLock()
 	defer fake.quitMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
