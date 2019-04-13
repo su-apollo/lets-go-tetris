@@ -1,6 +1,7 @@
 package game
 
 import (
+	"lets-go-tetris/interfaces/renderer"
 	"lets-go-tetris/render"
 )
 
@@ -15,17 +16,17 @@ type ground struct {
 	colors []uint32
 }
 
-func (g *ground) RenderInfo() []render.Info {
-	var infos []render.Info
+func (g *ground) RenderInfo() []renderer.Info {
+	var infos []renderer.Info
 
 	var x, y int32 = 0, 0
 	for i, cell := range g.cells {
 		if !cell {
-			infos = append(infos, render.Info{
+			infos = append(infos, &render.InfoImpl{
 				PosX: x, PosY: y, Color: tileColors[i%len(tileColors)],
 			})
 		} else {
-			infos = append(infos, render.Info{
+			infos = append(infos, &render.InfoImpl{
 				PosX: x, PosY: y, Color: g.colors[i],
 			})
 		}

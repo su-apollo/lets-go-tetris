@@ -1,4 +1,4 @@
-package mock
+package sdl2
 
 import (
 	"lets-go-tetris/interfaces/renderer"

@@ -2,8 +2,8 @@ package game
 
 import (
 	"lets-go-tetris/event"
+	"lets-go-tetris/interfaces/renderer"
 	"lets-go-tetris/option"
-	"lets-go-tetris/render"
 	"math/rand"
 	"time"
 )
@@ -24,12 +24,12 @@ type Game struct {
 	next  *mino
 	back  *ground
 
-	render render.Renderer
+	render renderer.Renderer
 
 	stepTimer int64
 }
 
-func New(opt option.Opt, r render.Renderer) *Game {
+func New(opt option.Opt, r renderer.Renderer) *Game {
 	g := &ground{opt.X, opt.Y, nil, nil}
 	g.reset()
 
@@ -50,7 +50,7 @@ func New(opt option.Opt, r render.Renderer) *Game {
 }
 
 func (game *Game) Run() {
-	var info []render.Info
+	var info []renderer.Info
 	front := time.Now()
 	for {
 		info = info[:0]
