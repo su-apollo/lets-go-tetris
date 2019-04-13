@@ -78,12 +78,15 @@ func (wrapper *SDLWrapper) Close() {
 	}
 }
 
-func (wrapper *SDLWrapper) Clear() {
-	wrapper.surface.FillRect(nil, 0x000000)
+func (wrapper *SDLWrapper) Clear() error {
+	return wrapper.surface.FillRect(nil, 0x000000)
 }
 
-func (wrapper *SDLWrapper) Render(info []Info) {
-	wrapper.Clear()
+func (wrapper *SDLWrapper) Render(info []Info) error {
+	if err := wrapper.Clear(); err != nil {
+		return err
+	}
+
 	for _, i := range info {
 		r := sdl.Rect{
 			X: i.PosX * wrapper.opt.CellSize,
@@ -93,6 +96,7 @@ func (wrapper *SDLWrapper) Render(info []Info) {
 		}
 		_ = wrapper.surface.FillRect(&r, i.Color)
 	}
+	return nil
 }
 
 func (wrapper *SDLWrapper) Update() ([]event.Msg, bool) {

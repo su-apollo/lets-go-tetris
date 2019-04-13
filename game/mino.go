@@ -86,13 +86,8 @@ type mino struct {
 	color uint32
 }
 
-func random(seed int64) uint32 {
-	rand.Seed(seed)
-	return rand.Uint32() % uint32(len(shapes))
-}
-
-func NewRandomMino(seed int64) *mino {
-	i := random(seed)
+func randomMino() *mino {
+	i := rand.Intn(len(shapes) - 1)
 	b := &mino{color: colors[i]}
 	b.init(shapes[i])
 	return b

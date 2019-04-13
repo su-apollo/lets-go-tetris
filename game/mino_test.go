@@ -6,7 +6,7 @@ import (
 	. "github.com/onsi/ginkgo/extensions/table"
 	. "github.com/onsi/gomega"
 	"lets-go-tetris/render"
-	"time"
+	"math/rand"
 )
 
 var _ = XDescribe("mino 초기화 성공 테스트", func() {
@@ -115,15 +115,21 @@ var _ = XDescribe("mino srs 테스트 (super rotate system)", func() {
 
 var _ = Describe("random 통제 테스트", func() {
 	It("seed 값이 같으면 동일한 결과가 나온다.", func() {
-		expected := NewRandomMino(0)
-		actual := NewRandomMino(0)
+		rand.Seed(0)
+		expected := randomMino()
+
+		rand.Seed(0)
+		actual := randomMino()
 		diff := deep.Equal(expected.cells, actual.cells)
 		Expect(diff).Should(BeNil())
 	})
 
 	It("seed 값이 다르면 결과도 다르게.", func() {
-		expected := NewRandomMino(time.Now().UnixNano())
-		actual := NewRandomMino(time.Now().UnixNano() + 1)
+		rand.Seed(0)
+		expected := randomMino()
+
+		rand.Seed(1)
+		actual := randomMino()
 		diff := deep.Equal(expected.cells, actual.cells)
 		Expect(diff).ShouldNot(BeNil())
 	})

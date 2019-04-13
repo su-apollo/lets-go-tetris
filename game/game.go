@@ -4,6 +4,7 @@ import (
 	"lets-go-tetris/event"
 	"lets-go-tetris/option"
 	"lets-go-tetris/render"
+	"math/rand"
 	"time"
 )
 
@@ -32,10 +33,11 @@ func New(opt option.Opt, r render.Renderer) *Game {
 	g := &ground{opt.X, opt.Y, nil, nil}
 	g.reset()
 
-	now := NewRandomMino(time.Now().UnixNano())
+	rand.Seed(time.Now().UnixNano())
+	now := randomMino()
 	now.x = startX
 
-	next := NewRandomMino(time.Now().UnixNano() + 1)
+	next := randomMino()
 	next.x = opt.X
 
 	return &Game{
@@ -57,7 +59,9 @@ func (game *Game) Run() {
 		info = append(info, game.now.RenderInfo()...)
 		info = append(info, game.next.RenderInfo()...)
 
-		game.render.Render(info)
+		if err := game.render.Render(info); err != nil {
+			break
+		}
 
 		keys, ok := game.render.Update()
 		if !ok {
@@ -132,7 +136,7 @@ func (game *Game) updatePlaying(delta int64) {
 
 			game.now = game.next
 			game.now.x = startX
-			game.next = NewRandomMino(time.Now().UnixNano())
+			game.next = randomMino()
 			game.next.x = game.back.x
 		}
 		game.stepTimer = 0
