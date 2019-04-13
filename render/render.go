@@ -1,20 +1,15 @@
 package render
 
-import (
-	"lets-go-tetris/event"
-)
-
-type Info struct {
+type InfoImpl struct {
 	PosX, PosY int32
 
 	Color uint32
 }
 
-type Renderer interface {
-	Render([]Info) error
-	Update() ([]event.Msg, bool)
+func (impl InfoImpl) GetPos() (int32, int32) {
+	return impl.PosX, impl.PosY
 }
 
-type Object interface {
-	RenderInfo() []Info
+func (impl *InfoImpl) GetColor() uint32 {
+	return impl.Color
 }

@@ -2,8 +2,8 @@ package render
 
 import (
 	"github.com/veandco/go-sdl2/sdl"
-
 	"lets-go-tetris/event"
+	"lets-go-tetris/interfaces/renderer"
 	"lets-go-tetris/option"
 )
 
@@ -82,19 +82,21 @@ func (wrapper *SDLWrapper) Clear() error {
 	return wrapper.surface.FillRect(nil, 0x000000)
 }
 
-func (wrapper *SDLWrapper) Render(info []Info) error {
+func (wrapper *SDLWrapper) Render(info []renderer.Info) error {
 	if err := wrapper.Clear(); err != nil {
 		return err
 	}
 
 	for _, i := range info {
+		posX, posY := i.GetPos()
 		r := sdl.Rect{
-			X: i.PosX * wrapper.opt.CellSize,
-			Y: i.PosY * wrapper.opt.CellSize,
+
+			X: posX * wrapper.opt.CellSize,
+			Y: posY * wrapper.opt.CellSize,
 			W: wrapper.opt.CellSize,
 			H: wrapper.opt.CellSize,
 		}
-		_ = wrapper.surface.FillRect(&r, i.Color)
+		_ = wrapper.surface.FillRect(&r, i.GetColor())
 	}
 	return nil
 }

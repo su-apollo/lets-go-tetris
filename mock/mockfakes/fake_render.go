@@ -2,6 +2,7 @@
 package mockfakes
 
 import (
+	"lets-go-tetris/interfaces/renderer"
 	"lets-go-tetris/mock"
 	"sync"
 )
@@ -17,19 +18,23 @@ type FakeRender struct {
 	initReturnsOnCall map[int]struct {
 		result1 error
 	}
-	PollEventStub        func() mock.Event
+	PollEventStub        func() renderer.Event
 	pollEventMutex       sync.RWMutex
 	pollEventArgsForCall []struct {
 	}
 	pollEventReturns struct {
-		result1 mock.Event
+		result1 renderer.Event
 	}
 	pollEventReturnsOnCall map[int]struct {
-		result1 mock.Event
+		result1 renderer.Event
 	}
 	QuitStub        func()
 	quitMutex       sync.RWMutex
 	quitArgsForCall []struct {
+	}
+	UpdateStub        func()
+	updateMutex       sync.RWMutex
+	updateArgsForCall []struct {
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
@@ -87,7 +92,7 @@ func (fake *FakeRender) InitReturnsOnCall(i int, result1 error) {
 	}{result1}
 }
 
-func (fake *FakeRender) PollEvent() mock.Event {
+func (fake *FakeRender) PollEvent() renderer.Event {
 	fake.pollEventMutex.Lock()
 	ret, specificReturn := fake.pollEventReturnsOnCall[len(fake.pollEventArgsForCall)]
 	fake.pollEventArgsForCall = append(fake.pollEventArgsForCall, struct {
@@ -110,32 +115,32 @@ func (fake *FakeRender) PollEventCallCount() int {
 	return len(fake.pollEventArgsForCall)
 }
 
-func (fake *FakeRender) PollEventCalls(stub func() mock.Event) {
+func (fake *FakeRender) PollEventCalls(stub func() renderer.Event) {
 	fake.pollEventMutex.Lock()
 	defer fake.pollEventMutex.Unlock()
 	fake.PollEventStub = stub
 }
 
-func (fake *FakeRender) PollEventReturns(result1 mock.Event) {
+func (fake *FakeRender) PollEventReturns(result1 renderer.Event) {
 	fake.pollEventMutex.Lock()
 	defer fake.pollEventMutex.Unlock()
 	fake.PollEventStub = nil
 	fake.pollEventReturns = struct {
-		result1 mock.Event
+		result1 renderer.Event
 	}{result1}
 }
 
-func (fake *FakeRender) PollEventReturnsOnCall(i int, result1 mock.Event) {
+func (fake *FakeRender) PollEventReturnsOnCall(i int, result1 renderer.Event) {
 	fake.pollEventMutex.Lock()
 	defer fake.pollEventMutex.Unlock()
 	fake.PollEventStub = nil
 	if fake.pollEventReturnsOnCall == nil {
 		fake.pollEventReturnsOnCall = make(map[int]struct {
-			result1 mock.Event
+			result1 renderer.Event
 		})
 	}
 	fake.pollEventReturnsOnCall[i] = struct {
-		result1 mock.Event
+		result1 renderer.Event
 	}{result1}
 }
 
@@ -162,6 +167,29 @@ func (fake *FakeRender) QuitCalls(stub func()) {
 	fake.QuitStub = stub
 }
 
+func (fake *FakeRender) Update() {
+	fake.updateMutex.Lock()
+	fake.updateArgsForCall = append(fake.updateArgsForCall, struct {
+	}{})
+	fake.recordInvocation("Update", []interface{}{})
+	fake.updateMutex.Unlock()
+	if fake.UpdateStub != nil {
+		fake.UpdateStub()
+	}
+}
+
+func (fake *FakeRender) UpdateCallCount() int {
+	fake.updateMutex.RLock()
+	defer fake.updateMutex.RUnlock()
+	return len(fake.updateArgsForCall)
+}
+
+func (fake *FakeRender) UpdateCalls(stub func()) {
+	fake.updateMutex.Lock()
+	defer fake.updateMutex.Unlock()
+	fake.UpdateStub = stub
+}
+
 func (fake *FakeRender) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
@@ -171,6 +199,8 @@ func (fake *FakeRender) Invocations() map[string][][]interface{} {
 	defer fake.pollEventMutex.RUnlock()
 	fake.quitMutex.RLock()
 	defer fake.quitMutex.RUnlock()
+	fake.updateMutex.RLock()
+	defer fake.updateMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

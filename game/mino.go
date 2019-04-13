@@ -1,6 +1,7 @@
 package game
 
 import (
+	"lets-go-tetris/interfaces/renderer"
 	"lets-go-tetris/render"
 	"math/rand"
 )
@@ -93,13 +94,13 @@ func randomMino() *mino {
 	return b
 }
 
-func (m *mino) RenderInfo() []render.Info {
-	var infos []render.Info
+func (m *mino) RenderInfo() []renderer.Info {
+	var infos []renderer.Info
 
 	var x, y int32 = 0, 0
 	for _, cell := range m.cells {
 		if cell {
-			infos = append(infos, render.Info{
+			infos = append(infos, &render.InfoImpl{
 				PosX: m.x + x, PosY: m.y + y, Color: m.color,
 			})
 		}
