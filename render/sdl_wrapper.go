@@ -22,8 +22,8 @@ type SDLWrapper struct {
 	deferFn   []fn
 	destroyFn []fn
 
-	window  *sdl.Window
-	surface *sdl.Surface
+	window  renderer.Window
+	surface renderer.Surface
 }
 
 const shapeX = 4
@@ -78,19 +78,18 @@ func (wrapper *SDLWrapper) Close() {
 	}
 }
 
-func (wrapper *SDLWrapper) Clear() error {
+func (wrapper *SDLWrapper) clear() error {
 	return wrapper.surface.FillRect(nil, 0x000000)
 }
 
 func (wrapper *SDLWrapper) Render(info []renderer.Info) error {
-	if err := wrapper.Clear(); err != nil {
+	if err := wrapper.clear(); err != nil {
 		return err
 	}
 
 	for _, i := range info {
 		posX, posY := i.GetPos()
 		r := sdl.Rect{
-
 			X: posX * wrapper.opt.CellSize,
 			Y: posY * wrapper.opt.CellSize,
 			W: wrapper.opt.CellSize,
@@ -102,7 +101,9 @@ func (wrapper *SDLWrapper) Render(info []renderer.Info) error {
 }
 
 func (wrapper *SDLWrapper) Update() ([]event.Msg, bool) {
-	wrapper.window.UpdateSurface()
+	if err := wrapper.window.UpdateSurface(); err != nil {
+		return nil, false
+	}
 
 	var keys []event.Msg
 	for e := sdl.PollEvent(); e != nil; e = sdl.PollEvent() {

@@ -8,6 +8,24 @@ import (
 )
 
 type FakeRender struct {
+	CreateWindowStub        func(string, int32, int32, int32, int32, uint32) (*renderer.Window, error)
+	createWindowMutex       sync.RWMutex
+	createWindowArgsForCall []struct {
+		arg1 string
+		arg2 int32
+		arg3 int32
+		arg4 int32
+		arg5 int32
+		arg6 uint32
+	}
+	createWindowReturns struct {
+		result1 *renderer.Window
+		result2 error
+	}
+	createWindowReturnsOnCall map[int]struct {
+		result1 *renderer.Window
+		result2 error
+	}
 	InitStub        func() error
 	initMutex       sync.RWMutex
 	initArgsForCall []struct {
@@ -38,6 +56,74 @@ type FakeRender struct {
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
+}
+
+func (fake *FakeRender) CreateWindow(arg1 string, arg2 int32, arg3 int32, arg4 int32, arg5 int32, arg6 uint32) (*renderer.Window, error) {
+	fake.createWindowMutex.Lock()
+	ret, specificReturn := fake.createWindowReturnsOnCall[len(fake.createWindowArgsForCall)]
+	fake.createWindowArgsForCall = append(fake.createWindowArgsForCall, struct {
+		arg1 string
+		arg2 int32
+		arg3 int32
+		arg4 int32
+		arg5 int32
+		arg6 uint32
+	}{arg1, arg2, arg3, arg4, arg5, arg6})
+	fake.recordInvocation("CreateWindow", []interface{}{arg1, arg2, arg3, arg4, arg5, arg6})
+	fake.createWindowMutex.Unlock()
+	if fake.CreateWindowStub != nil {
+		return fake.CreateWindowStub(arg1, arg2, arg3, arg4, arg5, arg6)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	fakeReturns := fake.createWindowReturns
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeRender) CreateWindowCallCount() int {
+	fake.createWindowMutex.RLock()
+	defer fake.createWindowMutex.RUnlock()
+	return len(fake.createWindowArgsForCall)
+}
+
+func (fake *FakeRender) CreateWindowCalls(stub func(string, int32, int32, int32, int32, uint32) (*renderer.Window, error)) {
+	fake.createWindowMutex.Lock()
+	defer fake.createWindowMutex.Unlock()
+	fake.CreateWindowStub = stub
+}
+
+func (fake *FakeRender) CreateWindowArgsForCall(i int) (string, int32, int32, int32, int32, uint32) {
+	fake.createWindowMutex.RLock()
+	defer fake.createWindowMutex.RUnlock()
+	argsForCall := fake.createWindowArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3, argsForCall.arg4, argsForCall.arg5, argsForCall.arg6
+}
+
+func (fake *FakeRender) CreateWindowReturns(result1 *renderer.Window, result2 error) {
+	fake.createWindowMutex.Lock()
+	defer fake.createWindowMutex.Unlock()
+	fake.CreateWindowStub = nil
+	fake.createWindowReturns = struct {
+		result1 *renderer.Window
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeRender) CreateWindowReturnsOnCall(i int, result1 *renderer.Window, result2 error) {
+	fake.createWindowMutex.Lock()
+	defer fake.createWindowMutex.Unlock()
+	fake.CreateWindowStub = nil
+	if fake.createWindowReturnsOnCall == nil {
+		fake.createWindowReturnsOnCall = make(map[int]struct {
+			result1 *renderer.Window
+			result2 error
+		})
+	}
+	fake.createWindowReturnsOnCall[i] = struct {
+		result1 *renderer.Window
+		result2 error
+	}{result1, result2}
 }
 
 func (fake *FakeRender) Init() error {
@@ -193,6 +279,8 @@ func (fake *FakeRender) UpdateCalls(stub func()) {
 func (fake *FakeRender) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
+	fake.createWindowMutex.RLock()
+	defer fake.createWindowMutex.RUnlock()
 	fake.initMutex.RLock()
 	defer fake.initMutex.RUnlock()
 	fake.pollEventMutex.RLock()
