@@ -27,14 +27,15 @@ type Event interface {
 type Render interface {
 	Init() error
 	Quit()
+	CreateWindow(string, int32, int32, int32, int32, uint32) (*Window, error)
 	PollEvent() Event
 	Update()
 }
 
 type Window interface {
-	GetSurface()
-	UpdateSurface() *sdl.Surface
-	Destroy()
+	GetSurface() (*sdl.Surface, error)
+	UpdateSurface() error
+	Destroy() error
 }
 
 type Surface interface {

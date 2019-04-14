@@ -3,43 +3,43 @@ package render
 import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"lets-go-tetris/interfaces/renderer"
 	"lets-go-tetris/mock/mockfakes"
-	"lets-go-tetris/option"
 )
 
-var _ = XDescribe("SDL2 Wrapper 테스트", func() {
+var _ = Describe("SDL2 Wrapper 테스트", func() {
 	var wrapper *SDLWrapper
-	opt := option.Opt{X: 123, Y: 123, CellSize: 123, Title: "test"}
+	var window *mockfakes.FakeWindow
+	surface := &mockfakes.FakeSurface{}
 
 	BeforeEach(func() {
-		var err error
-		wrapper, err = NewSDLWrapper(opt)
-		Expect(err).ShouldNot(HaveOccurred())
+		window = &mockfakes.FakeWindow{}
+		surface = &mockfakes.FakeSurface{}
+
+		wrapper = &SDLWrapper{}
+		wrapper.window = window
+		wrapper.surface = surface
 	})
 
 	AfterEach(func() {
 		wrapper.Close()
 		wrapper = nil
 	})
-})
 
-var _ = Describe("SDL2 Wrapper mock 의존성 주입", func() {
-	It("아직 얼개 짜기 중...", func() {
-		var init bool
-		wrapper := mockfakes.FakeRender{}
-		wrapper.InitCalls(func() error {
-			init = true
-			return nil
+	It("Render 함수가 그려야 할 정보를 잘 전달한다.", func() {
+		Expect(surface.FillRectCallCount()).Should(Equal(0))
+		err := wrapper.Render([]renderer.Info{})
+		Expect(err).ShouldNot(HaveOccurred())
+
+		// +1 : clear call 1 + draw call 0 = 1
+		Expect(surface.FillRectCallCount()).Should(Equal(1))
+
+		err = wrapper.Render([]renderer.Info{
+			&InfoImpl{12, 34, 5678},
 		})
+		Expect(err).ShouldNot(HaveOccurred())
 
-		wrapper.QuitCalls(func() {
-			init = false
-		})
-
-		Expect(wrapper.Init()).ShouldNot(HaveOccurred())
-		Expect(init).Should(BeTrue())
-
-		wrapper.QuitStub()
-		Expect(init).Should(BeFalse())
+		// +2 : clear call 1 + draw call 1 = 2
+		Expect(surface.FillRectCallCount()).Should(Equal(3))
 	})
 })

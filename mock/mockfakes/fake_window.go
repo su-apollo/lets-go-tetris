@@ -9,37 +9,57 @@ import (
 )
 
 type FakeWindow struct {
-	DestroyStub        func()
+	DestroyStub        func() error
 	destroyMutex       sync.RWMutex
 	destroyArgsForCall []struct {
 	}
-	GetSurfaceStub        func()
+	destroyReturns struct {
+		result1 error
+	}
+	destroyReturnsOnCall map[int]struct {
+		result1 error
+	}
+	GetSurfaceStub        func() (*sdl.Surface, error)
 	getSurfaceMutex       sync.RWMutex
 	getSurfaceArgsForCall []struct {
 	}
-	UpdateSurfaceStub        func() *sdl.Surface
+	getSurfaceReturns struct {
+		result1 *sdl.Surface
+		result2 error
+	}
+	getSurfaceReturnsOnCall map[int]struct {
+		result1 *sdl.Surface
+		result2 error
+	}
+	UpdateSurfaceStub        func() error
 	updateSurfaceMutex       sync.RWMutex
 	updateSurfaceArgsForCall []struct {
 	}
 	updateSurfaceReturns struct {
-		result1 *sdl.Surface
+		result1 error
 	}
 	updateSurfaceReturnsOnCall map[int]struct {
-		result1 *sdl.Surface
+		result1 error
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeWindow) Destroy() {
+func (fake *FakeWindow) Destroy() error {
 	fake.destroyMutex.Lock()
+	ret, specificReturn := fake.destroyReturnsOnCall[len(fake.destroyArgsForCall)]
 	fake.destroyArgsForCall = append(fake.destroyArgsForCall, struct {
 	}{})
 	fake.recordInvocation("Destroy", []interface{}{})
 	fake.destroyMutex.Unlock()
 	if fake.DestroyStub != nil {
-		fake.DestroyStub()
+		return fake.DestroyStub()
 	}
+	if specificReturn {
+		return ret.result1
+	}
+	fakeReturns := fake.destroyReturns
+	return fakeReturns.result1
 }
 
 func (fake *FakeWindow) DestroyCallCount() int {
@@ -48,21 +68,50 @@ func (fake *FakeWindow) DestroyCallCount() int {
 	return len(fake.destroyArgsForCall)
 }
 
-func (fake *FakeWindow) DestroyCalls(stub func()) {
+func (fake *FakeWindow) DestroyCalls(stub func() error) {
 	fake.destroyMutex.Lock()
 	defer fake.destroyMutex.Unlock()
 	fake.DestroyStub = stub
 }
 
-func (fake *FakeWindow) GetSurface() {
+func (fake *FakeWindow) DestroyReturns(result1 error) {
+	fake.destroyMutex.Lock()
+	defer fake.destroyMutex.Unlock()
+	fake.DestroyStub = nil
+	fake.destroyReturns = struct {
+		result1 error
+	}{result1}
+}
+
+func (fake *FakeWindow) DestroyReturnsOnCall(i int, result1 error) {
+	fake.destroyMutex.Lock()
+	defer fake.destroyMutex.Unlock()
+	fake.DestroyStub = nil
+	if fake.destroyReturnsOnCall == nil {
+		fake.destroyReturnsOnCall = make(map[int]struct {
+			result1 error
+		})
+	}
+	fake.destroyReturnsOnCall[i] = struct {
+		result1 error
+	}{result1}
+}
+
+func (fake *FakeWindow) GetSurface() (*sdl.Surface, error) {
 	fake.getSurfaceMutex.Lock()
+	ret, specificReturn := fake.getSurfaceReturnsOnCall[len(fake.getSurfaceArgsForCall)]
 	fake.getSurfaceArgsForCall = append(fake.getSurfaceArgsForCall, struct {
 	}{})
 	fake.recordInvocation("GetSurface", []interface{}{})
 	fake.getSurfaceMutex.Unlock()
 	if fake.GetSurfaceStub != nil {
-		fake.GetSurfaceStub()
+		return fake.GetSurfaceStub()
 	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	fakeReturns := fake.getSurfaceReturns
+	return fakeReturns.result1, fakeReturns.result2
 }
 
 func (fake *FakeWindow) GetSurfaceCallCount() int {
@@ -71,13 +120,39 @@ func (fake *FakeWindow) GetSurfaceCallCount() int {
 	return len(fake.getSurfaceArgsForCall)
 }
 
-func (fake *FakeWindow) GetSurfaceCalls(stub func()) {
+func (fake *FakeWindow) GetSurfaceCalls(stub func() (*sdl.Surface, error)) {
 	fake.getSurfaceMutex.Lock()
 	defer fake.getSurfaceMutex.Unlock()
 	fake.GetSurfaceStub = stub
 }
 
-func (fake *FakeWindow) UpdateSurface() *sdl.Surface {
+func (fake *FakeWindow) GetSurfaceReturns(result1 *sdl.Surface, result2 error) {
+	fake.getSurfaceMutex.Lock()
+	defer fake.getSurfaceMutex.Unlock()
+	fake.GetSurfaceStub = nil
+	fake.getSurfaceReturns = struct {
+		result1 *sdl.Surface
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeWindow) GetSurfaceReturnsOnCall(i int, result1 *sdl.Surface, result2 error) {
+	fake.getSurfaceMutex.Lock()
+	defer fake.getSurfaceMutex.Unlock()
+	fake.GetSurfaceStub = nil
+	if fake.getSurfaceReturnsOnCall == nil {
+		fake.getSurfaceReturnsOnCall = make(map[int]struct {
+			result1 *sdl.Surface
+			result2 error
+		})
+	}
+	fake.getSurfaceReturnsOnCall[i] = struct {
+		result1 *sdl.Surface
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeWindow) UpdateSurface() error {
 	fake.updateSurfaceMutex.Lock()
 	ret, specificReturn := fake.updateSurfaceReturnsOnCall[len(fake.updateSurfaceArgsForCall)]
 	fake.updateSurfaceArgsForCall = append(fake.updateSurfaceArgsForCall, struct {
@@ -100,32 +175,32 @@ func (fake *FakeWindow) UpdateSurfaceCallCount() int {
 	return len(fake.updateSurfaceArgsForCall)
 }
 
-func (fake *FakeWindow) UpdateSurfaceCalls(stub func() *sdl.Surface) {
+func (fake *FakeWindow) UpdateSurfaceCalls(stub func() error) {
 	fake.updateSurfaceMutex.Lock()
 	defer fake.updateSurfaceMutex.Unlock()
 	fake.UpdateSurfaceStub = stub
 }
 
-func (fake *FakeWindow) UpdateSurfaceReturns(result1 *sdl.Surface) {
+func (fake *FakeWindow) UpdateSurfaceReturns(result1 error) {
 	fake.updateSurfaceMutex.Lock()
 	defer fake.updateSurfaceMutex.Unlock()
 	fake.UpdateSurfaceStub = nil
 	fake.updateSurfaceReturns = struct {
-		result1 *sdl.Surface
+		result1 error
 	}{result1}
 }
 
-func (fake *FakeWindow) UpdateSurfaceReturnsOnCall(i int, result1 *sdl.Surface) {
+func (fake *FakeWindow) UpdateSurfaceReturnsOnCall(i int, result1 error) {
 	fake.updateSurfaceMutex.Lock()
 	defer fake.updateSurfaceMutex.Unlock()
 	fake.UpdateSurfaceStub = nil
 	if fake.updateSurfaceReturnsOnCall == nil {
 		fake.updateSurfaceReturnsOnCall = make(map[int]struct {
-			result1 *sdl.Surface
+			result1 error
 		})
 	}
 	fake.updateSurfaceReturnsOnCall[i] = struct {
-		result1 *sdl.Surface
+		result1 error
 	}{result1}
 }
 
