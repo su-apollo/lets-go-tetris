@@ -59,7 +59,7 @@ func (g *ground) step(m *mino) bool {
 
 func (g *ground) collide(m *mino) bool {
 	var x, y int32 = 0, 0
-	for _, cell := range m.cells {
+	for _, cell := range m.currentCells() {
 		if cell {
 			cx := m.x + x
 			cy := m.y + y
@@ -84,7 +84,7 @@ func (g *ground) collide(m *mino) bool {
 
 func (g *ground) merge(m *mino) {
 	var x, y int32 = 0, 0
-	for _, cell := range m.cells {
+	for _, cell := range m.currentCells() {
 		if cell {
 			cx := m.x + x
 			cy := m.y + y
