@@ -89,8 +89,10 @@ func (g *ground) merge(m *mino) {
 			cx := m.x + x
 			cy := m.y + y
 
-			g.cells[cy*g.x+cx] = true
-			g.colors[cy*g.x+cx] = m.color
+			if 0 <= cx && cx < g.x && 0 <= cy && cy < g.y {
+				g.cells[cy*g.x+cx] = true
+				g.colors[cy*g.x+cx] = m.color
+			}
 		}
 
 		x++
