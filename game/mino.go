@@ -228,9 +228,15 @@ type mino struct {
 
 func randomMino() *mino {
 	i := rand.Intn(len(shapes) - 1)
-	b := &mino{color: colors[i]}
-	b.init(shapes[i])
-	return b
+	m := &mino{color: colors[i]}
+	m.init(shapes[i])
+	return m
+}
+
+func newMino(s Shape) *mino {
+	m := &mino{color: colors[s]}
+	m.init(shapes[s])
+	return m
 }
 
 func (m *mino) RenderInfo() []renderer.Info {

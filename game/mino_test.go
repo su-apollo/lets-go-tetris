@@ -68,58 +68,73 @@ var _ = Describe("mino 초기화 성공 테스트", func() {
 	)
 })
 
+var _ = Describe("newMino 테스트", func() {
+	It("S블럭을 잘 반환한다.", func() {
+		m := newMino(S)
+		expected := []cell{
+			false,	true,	true,	false,
+			true,	true,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+		}
+
+		actual := m.currentCells()
+		diff := deep.Equal(actual, expected)
+		Expect(diff).Should(BeNil())
+	})
+})
+
 var _ = Describe("mino srs 테스트 (super rotate system)", func() {
 	type testData struct {
-		inputInit		[]string
-		inputRotation	int
-		expected		[]cell
+		shape		Shape
+		rotation	int
+		expected	[]cell
 	}
 
 	DescribeTable("테스트 케이스", func(d testData) {
-		m := mino{}
-		m.init(d.inputInit)
-		m.rotate(d.inputRotation)
+		m := newMino(d.shape)
+		m.rotate(d.rotation)
 		actual := m.currentCells()
 		diff := deep.Equal(actual, d.expected)
 		Expect(diff).Should(BeNil())
 	},
-		Entry("S", testData{shapes[S], -1, []cell{
+		Entry("S", testData{S, -1, []cell{
 			true,	false,	false,	false,
 			true,	true,	false,	false,
 			false,	true,	false,	false,
 			false,	false,	false,	false,
 		}}),
-		Entry("Z", testData{shapes[Z], 6, []cell{
+		Entry("Z", testData{Z, 6, []cell{
 			false,	false,	false,	false,
 			true,	true,	false,	false,
 			false,	true,	true,	false,
 			false,	false,	false,	false,
 		}}),
-		Entry("T", testData{shapes[T], -2, []cell{
+		Entry("T", testData{T, -2, []cell{
 			false,	false,	false,	false,
 			true,	true,	true,	false,
 			false,	true,	false,	false,
 			false,	false,	false,	false,
 		}}),
-		Entry("I", testData{shapes[I], 16, []cell{
+		Entry("I", testData{I, 16, []cell{
 			false,	false,	false,	false,
 			true,	true,	true,	true,
 			false,	false,	false,	false,
 			false,	false,	false,	false,
 		}}),
-		Entry("O", testData{shapes[O], -4, []cell{
+		Entry("O", testData{O, -4, []cell{
 			false,	true,	true,	false,
 			false,	true,	true,	false,
 			false,	false,	false,	false,
 			false,	false,	false,	false,
 		}}),
-		Entry("L", testData{shapes[L], 7, []cell{
+		Entry("L", testData{L, 7, []cell{
 			true,	true,	false,	false,
 			false,	true,	false,	false,
 			false,	true,	false,	false,
 			false,	false,	false,	false,
 		}}),
-		Entry("J", testData{shapes[J], -17, []cell{
+		Entry("J", testData{J, -17, []cell{
 			false,	true,	false,	false,
 			false,	true,	false,	false,
 			true,	true,	false,	false,
