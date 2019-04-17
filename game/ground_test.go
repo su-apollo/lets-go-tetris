@@ -94,6 +94,23 @@ var _ = Describe("ground merge 테스트", func() {
 })
 
 var _ = Describe("ground collide 테스트", func() {
+	It("정상적인 상황에서는 충돌하지 않는다.", func() {
+		g := ground{x: 4, y: 10}
+		g.reset()
+
+		m := newMino(S)
+		g.merge(m)
+
+		m = newMino(L)
+		m.y = 4
+
+		actual := g.collide(m)
+
+		expected := false
+
+		Expect(actual).Should(Equal(expected))
+	})
+
 	It("이미 ground에 머지되어있는 블럭과 잘 충돌한다.", func() {
 		g := ground{x: 4, y: 10}
 		g.reset()
@@ -108,6 +125,24 @@ var _ = Describe("ground collide 테스트", func() {
 
 		Expect(actual).Should(Equal(expected))
 	})
+
+	It("ground 밖으로 나갔는지 체크한다.", func() {
+		g := ground{x: 4, y: 10}
+		g.reset()
+
+		m := newMino(I)
+		m.x = 100
+		m.y = 100
+
+		actual := g.collide(m)
+
+		expected := true
+
+		Expect(actual).Should(Equal(expected))
+	})
+})
+
+var _ = XDescribe("ground step 테스트", func() {
 })
 
 var _ = XDescribe("mino wall kick 테스트", func() {
