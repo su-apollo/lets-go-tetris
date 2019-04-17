@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	shapeX = 4
- 	shapeY = 4
+	shapeX      = 4
+	shapeY      = 4
 	rotationMax = 4
 )
 
@@ -220,9 +220,9 @@ var colors = []uint32{
 type cell bool
 
 type mino struct {
-	x, y  int32
-	cells [][]cell
-	color uint32
+	x, y     int32
+	cells    [][]cell
+	color    uint32
 	rotation int
 }
 
@@ -280,7 +280,7 @@ func (m *mino) init(rotationShapes []string) {
 }
 
 func (m *mino) rotate(r int) {
-	m.rotation = (r%rotationMax + rotationMax)%rotationMax
+	m.rotation = (r%rotationMax + rotationMax) % rotationMax
 }
 
 func (m *mino) currentCells() []cell {
