@@ -106,9 +106,7 @@ var _ = Describe("ground collide 테스트", func() {
 
 		actual := g.collide(m)
 
-		expected := false
-
-		Expect(actual).Should(Equal(expected))
+		Expect(actual).Should(Equal(false))
 	})
 
 	It("이미 ground에 머지되어있는 블럭과 잘 충돌한다.", func() {
@@ -121,9 +119,7 @@ var _ = Describe("ground collide 테스트", func() {
 		m = newMino(L)
 		actual := g.collide(m)
 
-		expected := true
-
-		Expect(actual).Should(Equal(expected))
+		Expect(actual).Should(Equal(true))
 	})
 
 	It("ground 밖으로 나갔는지 체크한다.", func() {
@@ -136,13 +132,65 @@ var _ = Describe("ground collide 테스트", func() {
 
 		actual := g.collide(m)
 
-		expected := true
-
-		Expect(actual).Should(Equal(expected))
+		Expect(actual).Should(Equal(true))
 	})
 })
 
-var _ = XDescribe("ground step 테스트", func() {
+var _ = Describe("ground step 테스트", func() {
+	g := ground{x: 4, y:10}
+	g.reset()
+
+	m := newMino(I)
+	m.y = 6
+	g.merge(m)
+
+	m = newMino(Z)
+	m.y = 4
+
+	It("블럭이 충돌하지 않으면서 머지되지 않고 한칸 내려갔다.", func() {
+		Expect(g.step(m)).Should(Equal(false))
+
+		expected := []cell{
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			true,	true,	true,	true,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+		}
+		var y int32
+		y = 5
+
+		actual := g.cells
+		diff := deep.Equal(actual, expected)
+		Expect(diff).Should(BeNil())
+		Expect(m.y).Should(Equal(y))
+	})
+
+	It("블럭이 충돌하면서 머지된다.", func() {
+		Expect(g.step(m)).Should(Equal(true))
+
+		expected := []cell{
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			true,	true,	false,	false,
+			false,	true,	true,	false,
+			true,	true,	true,	true,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+		}
+
+		actual := g.cells
+		diff := deep.Equal(actual, expected)
+		Expect(diff).Should(BeNil())
+	})
 })
 
 var _ = XDescribe("mino wall kick 테스트", func() {
