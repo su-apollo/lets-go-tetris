@@ -197,6 +197,92 @@ var _ = XDescribe("mino wall kick 테스트", func() {
 })
 
 var _ = XDescribe("ground tetris check 테스트", func() {
+	type testData struct {
+		expected	int
+		before 		[]cell
+		after		[]cell
+	}
+
+	DescribeTable("테스트 케이스", func(d testData) {
+		g := ground{x:4, y:10}
+		g.cells = d.before
+
+		actual := g.tetris()
+		Expect(actual).Should(Equal(d.expected))
+
+		diff := deep.Equal(g.cells, d.after)
+		Expect(diff).Should(BeNil())
+	},
+		Entry("1줄", testData{1,[]cell{
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	true,	false,	true,
+			true,	true,	true,	true,
+			true,	true,	false,	true,
+		}, []cell{
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	true,	false,	true,
+			true,	true,	false,	true,
+		}}),
+		Entry("3줄", testData{4, []cell{
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			true,	true,	true,	true,
+			true,	true,	true,	true,
+			true,	true,	false,	true,
+			true,	true,	true,	true,
+		}, []cell{
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			true,	true,	false,	true,
+		}}),
+		Entry("4줄", testData{4, []cell{
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	true,	false,	false,
+			false,	true,	false,	false,
+			true,	true,	true,	true,
+			true,	true,	true,	true,
+			true,	true,	true,	true,
+			true,	true,	true,	true,
+		}, []cell{
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	false,	false,	false,
+			false,	true,	false,	false,
+			false,	true,	false,	false,
+		}}),
+	)
 })
 
 var _ = Describe("ground.RenderInfo() 함수가", func() {
