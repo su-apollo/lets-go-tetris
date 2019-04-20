@@ -8,8 +8,12 @@ import (
 	"time"
 )
 
+// State 타입은 게임의 상태를 나타낸다.
 type State int
 
+// Playing 		게임 진행 중
+// Paused 		일시 정지
+// Over			게임 종료
 const (
 	Playing State = iota
 	Paused
@@ -18,6 +22,7 @@ const (
 
 const startX = 3
 
+// Game 구조체는 테트리스의 전반 로직을 담당하는 자료구조다.
 type Game struct {
 	state State
 	now   *mino
@@ -29,6 +34,7 @@ type Game struct {
 	stepTimer int64
 }
 
+// New 함수는 게임 실행 옵션과 화면에 출력을 담당할 렌더러를 전달 받고 테트리스 로직을 담은 Game 자료구조를 반환한다.
 func New(opt option.Opt, r renderer.Renderer) *Game {
 	g := &ground{opt.X, opt.Y, nil, nil}
 	g.reset()
@@ -49,6 +55,7 @@ func New(opt option.Opt, r renderer.Renderer) *Game {
 	}
 }
 
+// Run 함수는 블로킹 된 상태로 게임을 실행한다.
 func (game *Game) Run() {
 	var info []renderer.Info
 	front := time.Now()
