@@ -227,6 +227,11 @@ var colors = []uint32{
 
 type cell bool
 
+const (
+	o cell = true
+	x cell = false
+)
+
 type mino struct {
 	x, y     int32
 	cells    [][]cell
@@ -291,6 +296,10 @@ func (m *mino) rotate(r int) {
 	m.rotation = (r%rotationMax + rotationMax) % rotationMax
 }
 
+func (m *mino) srs(g *ground, r int) {
+}
+
 func (m *mino) currentCells() []cell {
 	return m.cells[m.rotation]
 }
+
