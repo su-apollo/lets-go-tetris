@@ -195,13 +195,13 @@ var _ = Describe("ground step 테스트", func() {
 
 var _ = XDescribe("ground tetris check 테스트", func() {
 	type testData struct {
-		expected	int
-		before 		[]cell
-		after		[]cell
+		expected int
+		before   []cell
+		after    []cell
 	}
 
 	DescribeTable("테스트 케이스", func(d testData) {
-		g := ground{x:4, y:10}
+		g := ground{x: 4, y: 10}
 		g.cells = d.before
 
 		actual := g.tetris()
@@ -210,74 +210,74 @@ var _ = XDescribe("ground tetris check 테스트", func() {
 		diff := deep.Equal(g.cells, d.after)
 		Expect(diff).Should(BeNil())
 	},
-		Entry("1줄", testData{1,[]cell{
-			x,	x,	x,	x,
-			x,	x,	x,	x,
-			x,	x,	x,	x,
-			x,	x,	x,	x,
-			x,	x,	x,	x,
-			x,	x,	x,	x,
-			x,	x,	x,	x,
-			x,	o,	x,	o,
-			o,	o,	o,	o,
-			o,	o,	x,	o,
+		Entry("1줄", testData{1, []cell{
+			x, x, x, x,
+			x, x, x, x,
+			x, x, x, x,
+			x, x, x, x,
+			x, x, x, x,
+			x, x, x, x,
+			x, x, x, x,
+			x, o, x, o,
+			o, o, o, o,
+			o, o, x, o,
 		}, []cell{
-			x,	x,	x,	x,
-			x,	x,	x,	x,
-			x,	x,	x,	x,
-			x,	x,	x,	x,
-			x,	x,	x,	x,
-			x,	x,	x,	x,
-			x,	x,	x,	x,
-			x,	x,	x,	x,
-			x,	o,	x,	o,
-			o,	o,	x,	o,
+			x, x, x, x,
+			x, x, x, x,
+			x, x, x, x,
+			x, x, x, x,
+			x, x, x, x,
+			x, x, x, x,
+			x, x, x, x,
+			x, x, x, x,
+			x, o, x, o,
+			o, o, x, o,
 		}}),
 		Entry("3줄", testData{4, []cell{
-			x,	x,	x,	x,
-			x,	x,	x,	x,
-			x,	x,	x,	x,
-			x,	x,	x,	x,
-			x,	x,	x,	x,
-			x,	x,	x,	x,
-			o,	o,	o,	o,
-			o,	o,	o,	o,
-			o,	o,	x,	o,
-			o,	o,	o,	o,
+			x, x, x, x,
+			x, x, x, x,
+			x, x, x, x,
+			x, x, x, x,
+			x, x, x, x,
+			x, x, x, x,
+			o, o, o, o,
+			o, o, o, o,
+			o, o, x, o,
+			o, o, o, o,
 		}, []cell{
-			x,	x,	x,	x,
-			x,	x,	x,	x,
-			x,	x,	x,	x,
-			x,	x,	x,	x,
-			x,	x,	x,	x,
-			x,	x,	x,	x,
-			x,	x,	x,	x,
-			x,	x,	x,	x,
-			x,	x,	x,	x,
-			o,	o,	x,	o,
+			x, x, x, x,
+			x, x, x, x,
+			x, x, x, x,
+			x, x, x, x,
+			x, x, x, x,
+			x, x, x, x,
+			x, x, x, x,
+			x, x, x, x,
+			x, x, x, x,
+			o, o, x, o,
 		}}),
 		Entry("4줄", testData{4, []cell{
-			x,	x,	x,	x,
-			x,	x,	x,	x,
-			x,	x,	x,	x,
-			x,	x,	x,	x,
-			x,	o,	x,	x,
-			x,	o,	x,	x,
-			o,	o,	o,	o,
-			o,	o,	o,	o,
-			o,	o,	o,	o,
-			o,	o,	o,	o,
+			x, x, x, x,
+			x, x, x, x,
+			x, x, x, x,
+			x, x, x, x,
+			x, o, x, x,
+			x, o, x, x,
+			o, o, o, o,
+			o, o, o, o,
+			o, o, o, o,
+			o, o, o, o,
 		}, []cell{
-			x,	x,	x,	x,
-			x,	x,	x,	x,
-			x,	x,	x,	x,
-			x,	x,	x,	x,
-			x,	x,	x,	x,
-			x,	x,	x,	x,
-			x,	x,	x,	x,
-			x,	x,	x,	x,
-			x,	o,	x,	x,
-			x,	o,	x,	x,
+			x, x, x, x,
+			x, x, x, x,
+			x, x, x, x,
+			x, x, x, x,
+			x, x, x, x,
+			x, x, x, x,
+			x, x, x, x,
+			x, x, x, x,
+			x, o, x, x,
+			x, o, x, x,
 		}}),
 	)
 })

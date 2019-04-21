@@ -302,4 +302,3 @@ func (m *mino) srs(g *ground, r int) {
 func (m *mino) currentCells() []cell {
 	return m.cells[m.rotation]
 }
-
