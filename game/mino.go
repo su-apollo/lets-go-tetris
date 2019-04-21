@@ -9,7 +9,6 @@ import (
 const (
 	shapeX      = 4
 	shapeY      = 4
-	rotationMax = 4
 )
 
 // Shape 타입은 테트리스 블록의 모양 유형을 나타낸다.
@@ -30,6 +29,28 @@ const (
 	S
 	T
 	Z
+)
+
+type Rotation int
+type Rotate int
+
+const (
+	Zero Rotation = 0 + iota
+	Right
+	Two
+	Left
+	RotationMax
+)
+
+const (
+	ZtoR Rotate = 0 + iota
+	RtoZ
+	RtoT
+	TtoR
+	TtoL
+	LtoT
+	LtoZ
+	ZtoL
 )
 
 const i0 = `
@@ -232,11 +253,33 @@ const (
 	x cell = false
 )
 
+var wallKicks = map[Rotate][][]int{
+	ZtoR : {{0, 0}, {-1, 0}, {-1, -1}, {0, +2}, {-1, +2},},
+	RtoZ : {{0, 0}, {+1, 0}, {+1, +1}, {0, -2}, {+1, -2},},
+	RtoT : {{0, 0}, {+1, 0}, {+1, +1}, {0, -2}, {+1, -2},},
+	TtoR : {{0, 0}, {-1, 0}, {-1, -1}, {0, +2}, {-1, +2},},
+	TtoL : {{0, 0}, {+1, 0}, {+1, -1}, {0, +2}, {+1, +2},},
+	LtoT : {{0, 0}, {-1, 0}, {-1, +1}, {0, -2}, {-1, -2},},
+	LtoZ : {{0, 0}, {-1, 0}, {-1, +1}, {0, -2}, {-1, -2},},
+	ZtoL : {{0, 0}, {+1, 0}, {+1, -1}, {0, +2}, {+1, +2},},
+}
+
+var iKicks = map[Rotate][][]int{
+	ZtoR : {{0, 0}, {-2, 0}, {+1, 0}, {-2, +1}, {+1, -2},},
+	RtoZ : {{0, 0}, {+2, 0}, {-1, 0}, {+2, -1}, {-1, +2},},
+	RtoT : {{0, 0}, {-1, 0}, {+2, 0}, {-1, -2}, {+2, +1},},
+	TtoR : {{0, 0}, {+1, 0}, {-2, 0}, {+1, +2}, {-2, -1},},
+	TtoL : {{0, 0}, {+2, 0}, {-1, 0}, {+2, -1}, {-1, +2},},
+	LtoT : {{0, 0}, {-2, 0}, {+1, 0}, {-2, +1}, {+1, -2},},
+	LtoZ : {{0, 0}, {+1, 0}, {-2, 0}, {+1, +2}, {-2, -1},},
+	ZtoL : {{0, 0}, {-1, 0}, {+2, 0}, {-1, -2}, {+2, +1},},
+}
+
 type mino struct {
 	x, y     int32
 	cells    [][]cell
 	color    uint32
-	rotation int
+	rotation Rotation
 }
 
 func randomMino() *mino {
@@ -273,7 +316,7 @@ func (m *mino) RenderInfo() []renderer.Info {
 }
 
 func (m *mino) init(rotationShapes []string) {
-	m.cells = make([][]cell, rotationMax)
+	m.cells = make([][]cell, RotationMax)
 	for i := range m.cells {
 		m.cells[i] = make([]cell, shapeX*shapeY)
 	}
@@ -292,11 +335,11 @@ func (m *mino) init(rotationShapes []string) {
 	}
 }
 
-func (m *mino) rotate(r int) {
-	m.rotation = (r%rotationMax + rotationMax) % rotationMax
+func (m *mino) rotate(r Rotation) {
+	m.rotation = (r%RotationMax + RotationMax) % RotationMax
 }
 
-func (m *mino) srs(g *ground, r int) {
+func (m *mino) srs(g *ground, r Rotate) {
 }
 
 func (m *mino) currentCells() []cell {

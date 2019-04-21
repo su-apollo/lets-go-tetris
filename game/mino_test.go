@@ -84,10 +84,10 @@ var _ = Describe("newMino 테스트", func() {
 	})
 })
 
-var _ = Describe("mino rotate 테스트", func() {
+var _ = Describe("mino rotation 테스트", func() {
 	type testData struct {
 		shape    Shape
-		rotation int
+		rotation Rotation
 		expected []cell
 	}
 
@@ -145,12 +145,12 @@ var _ = Describe("mino rotate 테스트", func() {
 
 var _ = XDescribe("mino srs 테스트 (super rotation system)", func() {
 	type testData struct {
-		shape		Shape
-		x, y		int32
-		rotation	int
-		ground 		[]cell
-		expectedX	int32
-		expectedY	int32
+		shape Shape
+		x, y int32
+		rotate Rotate
+		ground []cell
+		expectedX int32
+		expectedY int32
 	}
 
 	DescribeTable("테스트 케이스", func(d testData) {
@@ -158,7 +158,7 @@ var _ = XDescribe("mino srs 테스트 (super rotation system)", func() {
 		g.cells = d.ground
 
 		actual := newMino(d.shape)
-		actual.srs(&g, d.rotation)
+		actual.srs(&g, d.rotate)
 
 		expected := newMino(d.shape)
 		expected.x = d.expectedX
@@ -169,12 +169,13 @@ var _ = XDescribe("mino srs 테스트 (super rotation system)", func() {
 	},
 		Entry("J", testData{L, 4, 3, -1, []cell{
 			x, x, x, x, x, x, x, x, x, x,
-			x, x, x, x, x, x, x, x, x, x,
-			x, x, x, x, x, x, x, x, x, x,
-			x, x, x, x, x, x, x, x, x, x,
-			x, x, x, x, x, x, x, x, x, x,
-			x, x, x, x, x, x, x, x, x, x,
-			x, x, x, x, x, x, x, x, x, x,
+			x, x, x, x, o, o, x, x, x, x,
+			x, x, x, x, x, o, o, o, x, x,
+			x, x, x, x, x, x, o, o, o, o,
+			x, o, o, o, x, x, x, o, o, o,
+			o, o, x, x, x, x, o, o, o, o,
+			o, o, o, o, x, x, o, o, o, o,
+			o, o, o, o, o, x, o, o, o, o,
 		}, 6, 2,}),
 	)
 })
