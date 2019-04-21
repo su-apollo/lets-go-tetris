@@ -23,7 +23,7 @@ test: deps
 
 lint: devel-deps
 	$(GO) vet ./...
-	golint -set_exit_status
+	golint -set_exit_status ./...
 
 cover: devel-deps
 	COVERALLS_TOKEN=${COVERALLS_TOKEN} goveralls -coverprofile=coverage.out --service=travis-ci

@@ -24,46 +24,46 @@ var _ = Describe("mino 초기화 성공 테스트", func() {
 		Expect(diff).Should(BeNil())
 	},
 		Entry("S", testData{shapes[S], []cell{
-			false,	true,	true,	false,
-			true,	true,	false,	false,
-			false,	false,	false,	false,
-			false,	false,	false,	false,
+			false, true, true, false,
+			true, true, false, false,
+			false, false, false, false,
+			false, false, false, false,
 		}}),
 		Entry("Z", testData{shapes[Z], []cell{
-			true,	true,	false,	false,
-			false,	true,	true,	false,
-			false,	false,	false,	false,
-			false,	false,	false,	false,
+			true, true, false, false,
+			false, true, true, false,
+			false, false, false, false,
+			false, false, false, false,
 		}}),
 		Entry("T", testData{shapes[T], []cell{
-			false,	true,	false,	false,
-			true,	true,	true,	false,
-			false,	false,	false,	false,
-			false,	false,	false,	false,
+			false, true, false, false,
+			true, true, true, false,
+			false, false, false, false,
+			false, false, false, false,
 		}}),
 		Entry("I", testData{shapes[I], []cell{
-			false,	false,	false,	false,
-			true,	true,	true,	true,
-			false,	false,	false,	false,
-			false,	false,	false,	false,
+			false, false, false, false,
+			true, true, true, true,
+			false, false, false, false,
+			false, false, false, false,
 		}}),
 		Entry("O", testData{shapes[O], []cell{
-			false,	true,	true,	false,
-			false,	true,	true,	false,
-			false,	false,	false,	false,
-			false,	false,	false,	false,
+			false, true, true, false,
+			false, true, true, false,
+			false, false, false, false,
+			false, false, false, false,
 		}}),
 		Entry("L", testData{shapes[L], []cell{
-			false,	false,	true,	false,
-			true,	true,	true,	false,
-			false,	false,	false,	false,
-			false,	false,	false,	false,
+			false, false, true, false,
+			true, true, true, false,
+			false, false, false, false,
+			false, false, false, false,
 		}}),
 		Entry("J", testData{shapes[J], []cell{
-			true,	false,	false,	false,
-			true,	true,	true,	false,
-			false,	false,	false,	false,
-			false,	false,	false,	false,
+			true, false, false, false,
+			true, true, true, false,
+			false, false, false, false,
+			false, false, false, false,
 		}}),
 	)
 })
@@ -72,10 +72,10 @@ var _ = Describe("newMino 테스트", func() {
 	It("S블럭을 잘 반환한다.", func() {
 		m := newMino(S)
 		expected := []cell{
-			false,	true,	true,	false,
-			true,	true,	false,	false,
-			false,	false,	false,	false,
-			false,	false,	false,	false,
+			false, true, true, false,
+			true, true, false, false,
+			false, false, false, false,
+			false, false, false, false,
 		}
 
 		actual := m.currentCells()
@@ -86,9 +86,9 @@ var _ = Describe("newMino 테스트", func() {
 
 var _ = Describe("mino srs 테스트 (super rotate system)", func() {
 	type testData struct {
-		shape		Shape
-		rotation	int
-		expected	[]cell
+		shape    Shape
+		rotation int
+		expected []cell
 	}
 
 	DescribeTable("테스트 케이스", func(d testData) {
@@ -99,46 +99,46 @@ var _ = Describe("mino srs 테스트 (super rotate system)", func() {
 		Expect(diff).Should(BeNil())
 	},
 		Entry("S", testData{S, -1, []cell{
-			true,	false,	false,	false,
-			true,	true,	false,	false,
-			false,	true,	false,	false,
-			false,	false,	false,	false,
+			true, false, false, false,
+			true, true, false, false,
+			false, true, false, false,
+			false, false, false, false,
 		}}),
 		Entry("Z", testData{Z, 6, []cell{
-			false,	false,	false,	false,
-			true,	true,	false,	false,
-			false,	true,	true,	false,
-			false,	false,	false,	false,
+			false, false, false, false,
+			true, true, false, false,
+			false, true, true, false,
+			false, false, false, false,
 		}}),
 		Entry("T", testData{T, -2, []cell{
-			false,	false,	false,	false,
-			true,	true,	true,	false,
-			false,	true,	false,	false,
-			false,	false,	false,	false,
+			false, false, false, false,
+			true, true, true, false,
+			false, true, false, false,
+			false, false, false, false,
 		}}),
 		Entry("I", testData{I, 16, []cell{
-			false,	false,	false,	false,
-			true,	true,	true,	true,
-			false,	false,	false,	false,
-			false,	false,	false,	false,
+			false, false, false, false,
+			true, true, true, true,
+			false, false, false, false,
+			false, false, false, false,
 		}}),
 		Entry("O", testData{O, -4, []cell{
-			false,	true,	true,	false,
-			false,	true,	true,	false,
-			false,	false,	false,	false,
-			false,	false,	false,	false,
+			false, true, true, false,
+			false, true, true, false,
+			false, false, false, false,
+			false, false, false, false,
 		}}),
 		Entry("L", testData{L, 7, []cell{
-			true,	true,	false,	false,
-			false,	true,	false,	false,
-			false,	true,	false,	false,
-			false,	false,	false,	false,
+			true, true, false, false,
+			false, true, false, false,
+			false, true, false, false,
+			false, false, false, false,
 		}}),
 		Entry("J", testData{J, -17, []cell{
-			false,	true,	false,	false,
-			false,	true,	false,	false,
-			true,	true,	false,	false,
-			false,	false,	false,	false,
+			false, true, false, false,
+			false, true, false, false,
+			true, true, false, false,
+			false, false, false, false,
 		}}),
 	)
 })
@@ -168,11 +168,11 @@ var _ = Describe("random 통제 테스트", func() {
 var _ = Describe("mino.RenderInfo() 함수가", func() {
 	It("렌더링 정보를 제대로 반환한다.", func() {
 		m := mino{
-			cells: 		[][]cell{{false, true, false, true}, {true, true, true, true}, {true, true, false, true}, {false, true, true, true}},
-			color: 		123,
-			x:     		1234,
-			y:     		4321,
-			rotation:	0,
+			cells:    [][]cell{{false, true, false, true}, {true, true, true, true}, {true, true, false, true}, {false, true, true, true}},
+			color:    123,
+			x:        1234,
+			y:        4321,
+			rotation: 0,
 		}
 		expected := []renderer.Info{
 			&render.InfoImpl{PosX: 1 + 1234, PosY: 4321, Color: 123},

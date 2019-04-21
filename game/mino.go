@@ -7,13 +7,21 @@ import (
 )
 
 const (
-	shapeX = 4
- 	shapeY = 4
+	shapeX      = 4
+	shapeY      = 4
 	rotationMax = 4
 )
 
+// Shape 타입은 테트리스 블록의 모양 유형을 나타낸다.
 type Shape int
 
+// I		긴 막대기형
+// J		ㄱ 모양
+// L		L 모양 (J와 거울대칭)
+// O		2x2 정사각형 블록
+// S		두 번 꺾인(S) 모양
+// T		T 모양
+// Z		두 번 꺾인(Z) 모양 (S와 거울 대칭)
 const (
 	I Shape = 0 + iota
 	J
@@ -220,9 +228,9 @@ var colors = []uint32{
 type cell bool
 
 type mino struct {
-	x, y  int32
-	cells [][]cell
-	color uint32
+	x, y     int32
+	cells    [][]cell
+	color    uint32
 	rotation int
 }
 
@@ -280,7 +288,7 @@ func (m *mino) init(rotationShapes []string) {
 }
 
 func (m *mino) rotate(r int) {
-	m.rotation = (r%rotationMax + rotationMax)%rotationMax
+	m.rotation = (r%rotationMax + rotationMax) % rotationMax
 }
 
 func (m *mino) currentCells() []cell {
