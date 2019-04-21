@@ -143,12 +143,12 @@ var _ = Describe("mino rotation 테스트", func() {
 	)
 })
 
-var _ = XDescribe("mino srs 테스트 (super rotation system)", func() {
+var _ = Describe("mino srs 테스트 (super rotation system)", func() {
 	type testData struct {
-		shape Shape
-		x, y int32
-		rotate Rotate
-		ground []cell
+		shape     Shape
+		x, y      int32
+		rotate    Rotate
+		ground    []cell
 		expectedX int32
 		expectedY int32
 	}
@@ -167,7 +167,7 @@ var _ = XDescribe("mino srs 테스트 (super rotation system)", func() {
 		diff := deep.Equal(actual, expected)
 		Expect(diff).Should(BeNil())
 	},
-		Entry("J", testData{L, 4, 3, -1, []cell{
+		Entry("J", testData{L, 4, 3, ZtoL, []cell{
 			x, x, x, x, x, x, x, x, x, x,
 			x, x, x, x, o, o, x, x, x, x,
 			x, x, x, x, x, o, o, o, x, x,
@@ -176,7 +176,7 @@ var _ = XDescribe("mino srs 테스트 (super rotation system)", func() {
 			o, o, x, x, x, x, o, o, o, o,
 			o, o, o, o, x, x, o, o, o, o,
 			o, o, o, o, o, x, o, o, o, o,
-		}, 6, 2,}),
+		}, 6, 2}),
 	)
 })
 

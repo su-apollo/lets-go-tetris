@@ -253,7 +253,7 @@ const (
 	x cell = false
 )
 
-var wallKicks = map[Rotate][][]int{
+var wallKicks = map[Rotate][][]int32{
 	ZtoR : {{0, 0}, {-1, 0}, {-1, -1}, {0, +2}, {-1, +2},},
 	RtoZ : {{0, 0}, {+1, 0}, {+1, +1}, {0, -2}, {+1, -2},},
 	RtoT : {{0, 0}, {+1, 0}, {+1, +1}, {0, -2}, {+1, -2},},
@@ -264,7 +264,7 @@ var wallKicks = map[Rotate][][]int{
 	ZtoL : {{0, 0}, {+1, 0}, {+1, -1}, {0, +2}, {+1, +2},},
 }
 
-var iKicks = map[Rotate][][]int{
+var iKicks = map[Rotate][][]int32{
 	ZtoR : {{0, 0}, {-2, 0}, {+1, 0}, {-2, +1}, {+1, -2},},
 	RtoZ : {{0, 0}, {+2, 0}, {-1, 0}, {+2, -1}, {-1, +2},},
 	RtoT : {{0, 0}, {-1, 0}, {+2, 0}, {-1, -2}, {+2, +1},},
@@ -276,6 +276,7 @@ var iKicks = map[Rotate][][]int{
 }
 
 type mino struct {
+	shape    Shape
 	x, y     int32
 	cells    [][]cell
 	color    uint32
@@ -283,15 +284,17 @@ type mino struct {
 }
 
 func randomMino() *mino {
-	i := rand.Intn(len(shapes) - 1)
-	m := &mino{color: colors[i]}
-	m.init(shapes[i])
+	s := rand.Intn(len(shapes) - 1)
+	m := &mino{color: colors[s]}
+	m.init(shapes[s])
+	m.shape = Shape(s)
 	return m
 }
 
 func newMino(s Shape) *mino {
 	m := &mino{color: colors[s]}
 	m.init(shapes[s])
+	m.shape = s
 	return m
 }
 
@@ -340,9 +343,29 @@ func (m *mino) rotate(r Rotation) {
 }
 
 func (m *mino) srs(g *ground, r Rotate) {
+	if m.shape == I {
+		for _, v := range iKicks[r] {
+			m.x += v[0]
+			m.y += v[1]
+			if !g.collide(m) {
+				return
+			}
+			m.x -= v[0]
+			m.y -= v[1]
+ 		}
+	} else {
+		for _, v := range wallKicks[r] {
+			m.x += v[0]
+			m.y += v[1]
+			if !g.collide(m) {
+				return
+			}
+			m.x -= v[0]
+			m.y -= v[1]
+		}
+	}
 }
 
 func (m *mino) currentCells() []cell {
 	return m.cells[m.rotation]
 }
-
