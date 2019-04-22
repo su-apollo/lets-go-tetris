@@ -1,7 +1,6 @@
 package game
 
 import (
-	"lets-go-tetris/interfaces/renderer"
 	"lets-go-tetris/render"
 	"math/rand"
 )
@@ -46,7 +45,7 @@ const (
 	RotationMax
 )
 
-// Rotate 타입 2^3개 
+// Rotate 타입 2^3개
 const (
 	ZtoR Rotate = 0 + iota
 	RtoZ
@@ -303,8 +302,8 @@ func newMino(s Shape) *mino {
 	return m
 }
 
-func (m *mino) RenderInfo() []renderer.Info {
-	var infos []renderer.Info
+func (m *mino) RenderInfo() []render.Info {
+	var infos []render.Info
 
 	var x, y int32 = 0, 0
 	for _, cell := range m.currentCells() {

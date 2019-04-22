@@ -2,8 +2,8 @@ package game
 
 import (
 	"lets-go-tetris/event"
-	"lets-go-tetris/interfaces/renderer"
 	"lets-go-tetris/option"
+	"lets-go-tetris/render"
 	"math/rand"
 	"time"
 )
@@ -29,13 +29,13 @@ type Game struct {
 	next  *mino
 	back  *ground
 
-	render renderer.Renderer
+	render render.Renderer
 
 	stepTimer int64
 }
 
 // New 함수는 게임 실행 옵션과 화면에 출력을 담당할 렌더러를 전달 받고 테트리스 로직을 담은 Game 자료구조를 반환한다.
-func New(opt option.Opt, r renderer.Renderer) *Game {
+func New(opt option.Opt, r render.Renderer) *Game {
 	g := &ground{opt.X, opt.Y, nil, nil}
 	g.reset()
 
@@ -57,7 +57,7 @@ func New(opt option.Opt, r renderer.Renderer) *Game {
 
 // Run 함수는 블로킹 된 상태로 게임을 실행한다.
 func (game *Game) Run() {
-	var info []renderer.Info
+	var info []render.Info
 	front := time.Now()
 	for {
 		info = info[:0]

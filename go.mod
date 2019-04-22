@@ -8,7 +8,7 @@ require (
 	github.com/blang/semver v3.5.1+incompatible // indirect
 	github.com/go-test/deep v1.0.1
 	github.com/mattn/goveralls v0.0.2 // indirect
-	github.com/maxbrunsfeld/counterfeiter/v6 v6.0.2 // indirect
+	github.com/maxbrunsfeld/counterfeiter/v6 v6.0.2
 	github.com/motemen/gobump v0.0.0-20190215161939-66ee926e4810 // indirect
 	github.com/onsi/ginkgo v1.8.0
 	github.com/onsi/gomega v1.5.0

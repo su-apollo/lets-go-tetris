@@ -5,7 +5,6 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/ginkgo/extensions/table"
 	. "github.com/onsi/gomega"
-	"lets-go-tetris/interfaces/renderer"
 	"lets-go-tetris/render"
 	"math/rand"
 )
@@ -211,7 +210,7 @@ var _ = Describe("mino.RenderInfo() 함수가", func() {
 			y:        4321,
 			rotation: 0,
 		}
-		expected := []renderer.Info{
+		expected := []render.Info{
 			&render.InfoImpl{PosX: 1 + 1234, PosY: 4321, Color: 123},
 			&render.InfoImpl{PosX: 3 + 1234, PosY: 4321, Color: 123},
 		}
