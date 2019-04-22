@@ -3,12 +3,12 @@ package main
 import (
 	"lets-go-tetris/game"
 	"lets-go-tetris/option"
-	"lets-go-tetris/render"
+	"lets-go-tetris/render/sdl"
 )
 
 func main() {
 	opt := option.Opt{X: 11, Y: 23, CellSize: 20, Title: "Lets go"}
-	r, err := render.NewSDLWrapper(opt)
+	r, err := sdl.NewSDLWrapper(opt)
 	if err != nil {
 		panic(err)
 	}

@@ -1,15 +1,15 @@
-package render
+package sdl
 
 import (
 	"github.com/veandco/go-sdl2/sdl"
 	"lets-go-tetris/event"
-	"lets-go-tetris/interfaces/renderer"
 	"lets-go-tetris/option"
+	"lets-go-tetris/render"
 )
 
 // NewSDLWrapper 함수는 Renderer 인터페이스를 구현한, SDL2 Wrapper 구조체를 반환한다.
-func NewSDLWrapper(opt option.Opt) (*SDLWrapper, error) {
-	wrapper := &SDLWrapper{opt: opt}
+func NewSDLWrapper(opt option.Opt) (*Wrapper, error) {
+	wrapper := &Wrapper{opt: opt}
 
 	err := wrapper.init()
 	return wrapper, err
@@ -17,20 +17,20 @@ func NewSDLWrapper(opt option.Opt) (*SDLWrapper, error) {
 
 type fn func()
 
-// SDLWrapper 구조체는 SDL2 라이브러리를 감싸고, Renderer 인터페이스를 구현한다.
-type SDLWrapper struct {
+// Wrapper 구조체는 SDL2 라이브러리를 감싸고, Renderer 인터페이스를 구현한다.
+type Wrapper struct {
 	opt option.Opt
 
 	deferFn   []fn
 	destroyFn []fn
 
-	window  renderer.Window
-	surface renderer.Surface
+	window  render.Window
+	surface render.Surface
 }
 
 const shapeX = 4
 
-func (wrapper *SDLWrapper) init() error {
+func (wrapper *Wrapper) init() error {
 	defer func() {
 		for _, f := range wrapper.deferFn {
 			f()
@@ -68,25 +68,25 @@ func (wrapper *SDLWrapper) init() error {
 	return nil
 }
 
-func (wrapper *SDLWrapper) pushFn(f fn) {
+func (wrapper *Wrapper) pushFn(f fn) {
 	wrapper.deferFn = append([]fn{func() {
 		sdl.Quit()
 	}}, wrapper.deferFn...)
 }
 
 // Close SDLWrapper 내부에서 할당한 자원이 있다면 적절히 해제한다.
-func (wrapper *SDLWrapper) Close() {
+func (wrapper *Wrapper) Close() {
 	for _, f := range wrapper.destroyFn {
 		f()
 	}
 }
 
-func (wrapper *SDLWrapper) clear() error {
+func (wrapper *Wrapper) clear() error {
 	return wrapper.surface.FillRect(nil, 0x000000)
 }
 
 // Render 함수는 인자로 전달받은 렌더링 관련 정보를 적절히 해독하여 화면에 출력한다.
-func (wrapper *SDLWrapper) Render(info []renderer.Info) error {
+func (wrapper *Wrapper) Render(info []render.Info) error {
 	if err := wrapper.clear(); err != nil {
 		return err
 	}
@@ -105,7 +105,7 @@ func (wrapper *SDLWrapper) Render(info []renderer.Info) error {
 }
 
 // Update 함수는 화면을 적절히 갱신 한 후, 키보드 입력을 처리한다.
-func (wrapper *SDLWrapper) Update() ([]event.Msg, bool) {
+func (wrapper *Wrapper) Update() ([]event.Msg, bool) {
 	if err := wrapper.window.UpdateSurface(); err != nil {
 		return nil, false
 	}

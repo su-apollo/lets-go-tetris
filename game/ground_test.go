@@ -5,7 +5,6 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/ginkgo/extensions/table"
 	. "github.com/onsi/gomega"
-	"lets-go-tetris/interfaces/renderer"
 	"lets-go-tetris/render"
 )
 
@@ -291,7 +290,7 @@ var _ = Describe("ground.RenderInfo() 함수가", func() {
 			colors: []uint32{123, 123, 123, 123, 123, 123},
 		}
 
-		expected := []renderer.Info{
+		expected := []render.Info{
 			&render.InfoImpl{PosX: 0, PosY: 0, Color: 123},
 			&render.InfoImpl{PosX: 1, PosY: 0, Color: 123},
 			&render.InfoImpl{PosX: 0, PosY: 1, Color: 0xff353535},
