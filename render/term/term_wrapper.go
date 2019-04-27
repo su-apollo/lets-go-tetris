@@ -18,7 +18,7 @@ type Wrapper struct {
 	opt option.Opt
 
 	width, height int
-	backBuffer []termbox.Cell
+	backBuffer    []termbox.Cell
 }
 
 func (wrapper *Wrapper) init() error {
