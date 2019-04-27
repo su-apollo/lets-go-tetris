@@ -7,7 +7,7 @@ import (
 	"lets-go-tetris/render"
 )
 
-// 구현중
+// NewTermWrapper 구현중
 func NewTermWrapper(opt option.Opt) (*Wrapper, error) {
 	wrapper := &Wrapper{opt: opt}
 
@@ -15,7 +15,7 @@ func NewTermWrapper(opt option.Opt) (*Wrapper, error) {
 	return wrapper, err
 }
 
-// 구현중
+// Wrapper 구현중
 type Wrapper struct {
 	opt option.Opt
 
@@ -51,7 +51,7 @@ func (wrapper *Wrapper) flush() error {
 	return termbox.Flush()
 }
 
-// 구현중
+// Render 구현중
 func (wrapper *Wrapper) Render(info []render.Info) error {
 	if err := wrapper.clear(); err != nil {
 		return err
@@ -69,7 +69,7 @@ func (wrapper *Wrapper) Render(info []render.Info) error {
 	return nil
 }
 
-// 구현중
+// Update 구현중
 func (wrapper *Wrapper) Update() ([]event.Msg, bool) {
 	var keys []event.Msg
 
