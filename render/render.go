@@ -7,7 +7,7 @@ import (
 
 // Info 인터페이스는 렌더링에 필요한 정보(info)를 반환한다.
 type Info interface {
-	GetPos() (int32, int32)
+	GetPos() (int, int)
 	GetColor() uint32
 }
 
@@ -32,7 +32,7 @@ type Event interface {
 type Render interface {
 	Init() error
 	Quit()
-	CreateWindow(string, int32, int32, int32, int32, uint32) (*Window, error)
+	CreateWindow(string, int, int, int, int, uint32) (*Window, error)
 	PollEvent() Event
 	Update()
 }
@@ -51,13 +51,13 @@ type Surface interface {
 
 // InfoImpl 구조체는 Info 인터페이스의 내부 구현체
 type InfoImpl struct {
-	PosX, PosY int32
+	PosX, PosY int
 
 	Color uint32
 }
 
 // GetPos 함수는 좌표 정보를 반환한다.
-func (impl InfoImpl) GetPos() (int32, int32) {
+func (impl InfoImpl) GetPos() (int, int) {
 	return impl.PosX, impl.PosY
 }
 

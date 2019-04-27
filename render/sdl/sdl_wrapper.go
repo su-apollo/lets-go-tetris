@@ -41,8 +41,8 @@ func (wrapper *Wrapper) init() error {
 	}
 	wrapper.pushFn(sdl.Quit)
 
-	width := int32(wrapper.opt.X+shapeX) * wrapper.opt.CellSize
-	height := int32(wrapper.opt.Y) * wrapper.opt.CellSize
+	width := (wrapper.opt.X + shapeX) * wrapper.opt.CellSize
+	height := wrapper.opt.Y * wrapper.opt.CellSize
 	window, err := sdl.CreateWindow(
 		"lets go",
 		sdl.WINDOWPOS_UNDEFINED,
@@ -94,10 +94,10 @@ func (wrapper *Wrapper) Render(info []render.Info) error {
 	for _, i := range info {
 		posX, posY := i.GetPos()
 		r := sdl.Rect{
-			X: posX * wrapper.opt.CellSize,
-			Y: posY * wrapper.opt.CellSize,
-			W: wrapper.opt.CellSize,
-			H: wrapper.opt.CellSize,
+			X: int32(posX * wrapper.opt.CellSize),
+			Y: int32(posY * wrapper.opt.CellSize),
+			W: int32(wrapper.opt.CellSize),
+			H: int32(wrapper.opt.CellSize),
 		}
 		_ = wrapper.surface.FillRect(&r, i.GetColor())
 	}
@@ -133,9 +133,11 @@ func sdlKeyCodeToEvent(k sdl.Keycode) (event.Msg, bool) {
 	case sdl.K_RIGHT, sdl.K_d, sdl.K_l:
 		return event.Msg{Key: event.Right}, true
 	case sdl.K_UP, sdl.K_w, sdl.K_i:
-		return event.Msg{Key: event.Up}, true
-	case sdl.K_DOWN, sdl.K_s, sdl.K_k, sdl.K_SPACE:
+		return event.Msg{Key: event.ClockWise}, true
+	case sdl.K_DOWN, sdl.K_s, sdl.K_k:
 		return event.Msg{Key: event.Down}, true
+	case sdl.K_SPACE:
+		return event.Msg{Key: event.Drop}, true
 	case sdl.K_ESCAPE:
 		return event.Msg{Key: event.Escape}, true
 	case sdl.K_p:

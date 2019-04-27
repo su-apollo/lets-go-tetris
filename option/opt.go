@@ -5,7 +5,7 @@ package option
 // CellSize = 격자 하나의 크기
 // Title = 윈도우 이름
 type Opt struct {
-	X, Y     int32
-	CellSize int32
+	X, Y     int
+	CellSize int
 	Title    string
 }

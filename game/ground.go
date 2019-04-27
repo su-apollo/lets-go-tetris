@@ -10,15 +10,15 @@ var tileColors = []uint32{
 }
 
 type ground struct {
-	x, y   int32
-	cells  []cell
-	colors []uint32
+	width, height int
+	cells         []cell
+	colors        []uint32
 }
 
 func (g *ground) RenderInfo() []render.Info {
 	var infos []render.Info
 
-	var x, y int32 = 0, 0
+	var x, y int = 0, 0
 	for i, cell := range g.cells {
 		if !cell {
 			infos = append(infos, &render.InfoImpl{
@@ -30,7 +30,7 @@ func (g *ground) RenderInfo() []render.Info {
 			})
 		}
 		x++
-		if x%g.x == 0 {
+		if x%g.width == 0 {
 			x = 0
 			y++
 		}
@@ -40,11 +40,11 @@ func (g *ground) RenderInfo() []render.Info {
 }
 
 func (g *ground) reset() {
-	g.cells = make([]cell, g.x*g.y)
-	g.colors = make([]uint32, g.x*g.y)
+	g.cells = make([]cell, g.width*g.height)
+	g.colors = make([]uint32, g.width*g.height)
 }
 
-func (g *ground) step(m *mino) bool {
+func (g *ground) step(m *tetromino) bool {
 	m.y++
 	if !g.collide(m) {
 		return false
@@ -56,18 +56,18 @@ func (g *ground) step(m *mino) bool {
 	return true
 }
 
-func (g *ground) collide(m *mino) bool {
-	var x, y int32 = 0, 0
+func (g *ground) collide(m *tetromino) bool {
+	var x, y = 0, 0
 	for _, cell := range m.currentCells() {
 		if cell {
 			cx := m.x + x
 			cy := m.y + y
 
-			if cx < 0 || g.x <= cx || cy < 0 || g.y <= cy {
+			if cx < 0 || g.width <= cx || cy < 0 || g.height <= cy {
 				return true
 			}
 
-			if g.cells[cy*g.x+cx] {
+			if g.cells[cy*g.width+cx] {
 				return true
 			}
 		}
@@ -81,16 +81,16 @@ func (g *ground) collide(m *mino) bool {
 	return false
 }
 
-func (g *ground) merge(m *mino) {
-	var x, y int32 = 0, 0
+func (g *ground) merge(m *tetromino) {
+	var x, y = 0, 0
 	for _, cell := range m.currentCells() {
 		if cell {
 			cx := m.x + x
 			cy := m.y + y
 
-			if 0 <= cx && cx < g.x && 0 <= cy && cy < g.y {
-				g.cells[cy*g.x+cx] = true
-				g.colors[cy*g.x+cx] = m.color
+			if 0 <= cx && cx < g.width && 0 <= cy && cy < g.height {
+				g.cells[cy*g.width+cx] = true
+				g.colors[cy*g.width+cx] = m.color
 			}
 		}
 
@@ -102,6 +102,27 @@ func (g *ground) merge(m *mino) {
 	}
 }
 
-func (g *ground) tetris() int {
-	return 0
+func (g *ground) removeLines() int {
+	lines := 0
+	for y := 0; y < g.height; y++ {
+		fill := true
+		for x := 0; x < g.width; x++ {
+			if !g.cells[y*g.width+x] {
+				fill = false
+				break
+			}
+		}
+
+		if fill {
+			lines++
+
+			for i := y - 1; i >= 0; i-- {
+				for x := 0; x < g.width; x++ {
+					offset := i*g.width + x
+					g.cells[offset+g.width] = g.cells[offset]
+				}
+			}
+		}
+	}
+	return lines
 }

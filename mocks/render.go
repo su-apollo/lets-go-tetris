@@ -2,19 +2,19 @@
 package mocks
 
 import (
-	render "lets-go-tetris/render"
-	sync "sync"
+	"lets-go-tetris/render"
+	"sync"
 )
 
 type Render struct {
-	CreateWindowStub        func(string, int32, int32, int32, int32, uint32) (*render.Window, error)
+	CreateWindowStub        func(string, int, int, int, int, uint32) (*render.Window, error)
 	createWindowMutex       sync.RWMutex
 	createWindowArgsForCall []struct {
 		arg1 string
-		arg2 int32
-		arg3 int32
-		arg4 int32
-		arg5 int32
+		arg2 int
+		arg3 int
+		arg4 int
+		arg5 int
 		arg6 uint32
 	}
 	createWindowReturns struct {
@@ -57,15 +57,15 @@ type Render struct {
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *Render) CreateWindow(arg1 string, arg2 int32, arg3 int32, arg4 int32, arg5 int32, arg6 uint32) (*render.Window, error) {
+func (fake *Render) CreateWindow(arg1 string, arg2 int, arg3 int, arg4 int, arg5 int, arg6 uint32) (*render.Window, error) {
 	fake.createWindowMutex.Lock()
 	ret, specificReturn := fake.createWindowReturnsOnCall[len(fake.createWindowArgsForCall)]
 	fake.createWindowArgsForCall = append(fake.createWindowArgsForCall, struct {
 		arg1 string
-		arg2 int32
-		arg3 int32
-		arg4 int32
-		arg5 int32
+		arg2 int
+		arg3 int
+		arg4 int
+		arg5 int
 		arg6 uint32
 	}{arg1, arg2, arg3, arg4, arg5, arg6})
 	fake.recordInvocation("CreateWindow", []interface{}{arg1, arg2, arg3, arg4, arg5, arg6})
@@ -86,13 +86,13 @@ func (fake *Render) CreateWindowCallCount() int {
 	return len(fake.createWindowArgsForCall)
 }
 
-func (fake *Render) CreateWindowCalls(stub func(string, int32, int32, int32, int32, uint32) (*render.Window, error)) {
+func (fake *Render) CreateWindowCalls(stub func(string, int, int, int, int, uint32) (*render.Window, error)) {
 	fake.createWindowMutex.Lock()
 	defer fake.createWindowMutex.Unlock()
 	fake.CreateWindowStub = stub
 }
 
-func (fake *Render) CreateWindowArgsForCall(i int) (string, int32, int32, int32, int32, uint32) {
+func (fake *Render) CreateWindowArgsForCall(i int) (string, int, int, int, int, uint32) {
 	fake.createWindowMutex.RLock()
 	defer fake.createWindowMutex.RUnlock()
 	argsForCall := fake.createWindowArgsForCall[i]

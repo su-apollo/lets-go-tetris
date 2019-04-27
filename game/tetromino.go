@@ -257,7 +257,7 @@ const (
 	x cell = false
 )
 
-var wallKicks = map[Rotate][][]int32{
+var wallKicks = map[Rotate][][]int{
 	ZtoR: {{0, 0}, {-1, 0}, {-1, -1}, {0, +2}, {-1, +2}},
 	RtoZ: {{0, 0}, {+1, 0}, {+1, +1}, {0, -2}, {+1, -2}},
 	RtoT: {{0, 0}, {+1, 0}, {+1, +1}, {0, -2}, {+1, -2}},
@@ -268,7 +268,7 @@ var wallKicks = map[Rotate][][]int32{
 	ZtoL: {{0, 0}, {+1, 0}, {+1, -1}, {0, +2}, {+1, +2}},
 }
 
-var iKicks = map[Rotate][][]int32{
+var iKicks = map[Rotate][][]int{
 	ZtoR: {{0, 0}, {-2, 0}, {+1, 0}, {-2, +1}, {+1, -2}},
 	RtoZ: {{0, 0}, {+2, 0}, {-1, 0}, {+2, -1}, {-1, +2}},
 	RtoT: {{0, 0}, {-1, 0}, {+2, 0}, {-1, -2}, {+2, +1}},
@@ -279,33 +279,33 @@ var iKicks = map[Rotate][][]int32{
 	ZtoL: {{0, 0}, {-1, 0}, {+2, 0}, {-1, -2}, {+2, +1}},
 }
 
-type mino struct {
+type tetromino struct {
 	shape    Shape
-	x, y     int32
+	x, y     int
 	cells    [][]cell
 	color    uint32
 	rotation Rotation
 }
 
-func randomMino() *mino {
+func randomTetromino() *tetromino {
 	s := rand.Intn(len(shapes) - 1)
-	m := &mino{color: colors[s]}
+	m := &tetromino{color: colors[s]}
 	m.init(shapes[s])
 	m.shape = Shape(s)
 	return m
 }
 
-func newMino(s Shape) *mino {
-	m := &mino{color: colors[s]}
+func newTetromino(s Shape) *tetromino {
+	m := &tetromino{color: colors[s]}
 	m.init(shapes[s])
 	m.shape = s
 	return m
 }
 
-func (m *mino) RenderInfo() []render.Info {
+func (m *tetromino) RenderInfo() []render.Info {
 	var infos []render.Info
 
-	var x, y int32 = 0, 0
+	var x, y int = 0, 0
 	for _, cell := range m.currentCells() {
 		if cell {
 			infos = append(infos, &render.InfoImpl{
@@ -322,7 +322,7 @@ func (m *mino) RenderInfo() []render.Info {
 	return infos
 }
 
-func (m *mino) init(rotationShapes []string) {
+func (m *tetromino) init(rotationShapes []string) {
 	m.cells = make([][]cell, RotationMax)
 	for i := range m.cells {
 		m.cells[i] = make([]cell, shapeX*shapeY)
@@ -342,17 +342,49 @@ func (m *mino) init(rotationShapes []string) {
 	}
 }
 
-func (m *mino) rotate(r Rotation) {
+func (m *tetromino) rotateClockWise() Rotate {
+	var r Rotate
+	switch m.rotation {
+	case Zero:
+		r = ZtoR
+	case Right:
+		r = RtoT
+	case Two:
+		r = TtoL
+	case Left:
+		r = LtoZ
+	}
+	m.rotate(m.rotation + 1)
+	return r
+}
+
+func (m *tetromino) rotateCounterClockWise() Rotate {
+	var r Rotate
+	switch m.rotation {
+	case Zero:
+		r = ZtoL
+	case Right:
+		r = RtoZ
+	case Two:
+		r = TtoR
+	case Left:
+		r = LtoT
+	}
+	m.rotate(m.rotation - 1)
+	return r
+}
+
+func (m *tetromino) rotate(r Rotation) {
 	m.rotation = (r%RotationMax + RotationMax) % RotationMax
 }
 
-func (m *mino) srs(g *ground, r Rotate) {
+func (m *tetromino) wallkick(g *ground, r Rotate) bool {
 	if m.shape == I {
 		for _, v := range iKicks[r] {
 			m.x += v[0]
 			m.y += v[1]
 			if !g.collide(m) {
-				return
+				return true
 			}
 			m.x -= v[0]
 			m.y -= v[1]
@@ -362,14 +394,15 @@ func (m *mino) srs(g *ground, r Rotate) {
 			m.x += v[0]
 			m.y += v[1]
 			if !g.collide(m) {
-				return
+				return true
 			}
 			m.x -= v[0]
 			m.y -= v[1]
 		}
 	}
+	return false
 }
 
-func (m *mino) currentCells() []cell {
+func (m *tetromino) currentCells() []cell {
 	return m.cells[m.rotation]
 }

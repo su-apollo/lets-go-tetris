@@ -25,8 +25,8 @@ const startX = 3
 // Game 구조체는 테트리스의 전반 로직을 담당하는 자료구조다.
 type Game struct {
 	state State
-	now   *mino
-	next  *mino
+	now   *tetromino
+	next  *tetromino
 	back  *ground
 
 	render render.Renderer
@@ -40,10 +40,10 @@ func New(opt option.Opt, r render.Renderer) *Game {
 	g.reset()
 
 	rand.Seed(time.Now().UnixNano())
-	now := randomMino()
+	now := randomTetromino()
 	now.x = startX
 
-	next := randomMino()
+	next := randomTetromino()
 	next.x = opt.X
 
 	return &Game{
@@ -104,11 +104,43 @@ func (game *Game) handleKey(msg event.Msg) {
 func (game *Game) handleKeyPlaying(msg event.Msg) {
 	switch msg.Key {
 	case event.Left:
+		game.now.x--
+		if game.back.collide(game.now) {
+			game.now.x++
+		}
 	case event.Right:
-	case event.Up:
+		game.now.x++
+		if game.back.collide(game.now) {
+			game.now.x--
+		}
 	case event.Down:
+		game.now.y++
+		if game.back.collide(game.now) {
+			game.now.y--
+			game.nextStep()
+		}
+	case event.ClockWise:
+		r := game.now.rotateClockWise()
+		if !game.now.wallkick(game.back, r) {
+			game.now.rotateCounterClockWise()
+		}
+	case event.CounterClockWise:
+		r := game.now.rotateCounterClockWise()
+		if !game.now.wallkick(game.back, r) {
+			game.now.rotateClockWise()
+		}
+	case event.Drop:
+		drop := true
+		for drop {
+			game.now.y++
+			drop = !game.back.collide(game.now)
+		}
+		game.now.y--
+		game.nextStep()
 	case event.Escape:
+
 	case event.Pause:
+
 	}
 }
 
@@ -138,13 +170,13 @@ func (game *Game) updatePlaying(delta int64) {
 	game.stepTimer += delta
 	if game.stepTimer > game.speed() {
 		if game.back.step(game.now) {
-			_ = game.back.tetris()
+			_ = game.back.removeLines()
 			//todo : score
 
 			game.now = game.next
 			game.now.x = startX
-			game.next = randomMino()
-			game.next.x = game.back.x
+			game.next = randomTetromino()
+			game.next.x = game.back.width
 		}
 		game.stepTimer = 0
 	}
@@ -161,4 +193,8 @@ func (game *Game) updateGameOver(delta int64) {
 func (game *Game) speed() int64 {
 	// todo : game level
 	return 1000000000
+}
+
+func (game *Game) nextStep() {
+	game.stepTimer += game.speed()
 }

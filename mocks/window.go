@@ -2,10 +2,10 @@
 package mocks
 
 import (
-	render "lets-go-tetris/render"
-	sync "sync"
+	"lets-go-tetris/render"
+	"sync"
 
-	sdl "github.com/veandco/go-sdl2/sdl"
+	"github.com/veandco/go-sdl2/sdl"
 )
 
 type Window struct {

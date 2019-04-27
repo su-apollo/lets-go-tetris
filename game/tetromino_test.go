@@ -9,14 +9,14 @@ import (
 	"math/rand"
 )
 
-var _ = Describe("mino 초기화 성공 테스트", func() {
+var _ = Describe("tetromino initialize test", func() {
 	type testData struct {
 		input    []string
 		expected []cell
 	}
 
-	DescribeTable("테스트 케이스", func(d testData) {
-		m := mino{}
+	DescribeTable("test cases", func(d testData) {
+		m := tetromino{}
 		m.init(d.input)
 		actual := m.currentCells()
 		diff := deep.Equal(actual, d.expected)
@@ -67,9 +67,9 @@ var _ = Describe("mino 초기화 성공 테스트", func() {
 	)
 })
 
-var _ = Describe("newMino 테스트", func() {
-	It("S블럭을 잘 반환한다.", func() {
-		m := newMino(S)
+var _ = Describe("newTetromino test", func() {
+	It("Succes return s mino", func() {
+		m := newTetromino(S)
 		expected := []cell{
 			x, o, o, x,
 			o, o, x, x,
@@ -83,15 +83,15 @@ var _ = Describe("newMino 테스트", func() {
 	})
 })
 
-var _ = Describe("mino rotation 테스트", func() {
+var _ = Describe("rotate test", func() {
 	type testData struct {
 		shape    Shape
 		rotation Rotation
 		expected []cell
 	}
 
-	DescribeTable("테스트 케이스", func(d testData) {
-		m := newMino(d.shape)
+	DescribeTable("test cases", func(d testData) {
+		m := newTetromino(d.shape)
 		m.rotate(d.rotation)
 		actual := m.currentCells()
 		diff := deep.Equal(actual, d.expected)
@@ -142,31 +142,95 @@ var _ = Describe("mino rotation 테스트", func() {
 	)
 })
 
-var _ = Describe("mino srs 테스트 (super rotation system)", func() {
+var _ = Describe("rotateClockWise test", func() {
 	type testData struct {
-		shape     Shape
-		x, y      int32
-		rotate    Rotate
-		ground    []cell
-		expectedX int32
-		expectedY int32
+		shape    Shape
+		rotation Rotation
+		expected Rotate
 	}
 
-	DescribeTable("테스트 케이스", func(d testData) {
-		g := ground{}
+	DescribeTable("test cases", func(d testData) {
+		m := newTetromino(d.shape)
+		m.rotate(d.rotation)
+		actual := m.rotateClockWise()
+		Expect(actual).Should(Equal(d.expected))
+	},
+		Entry("S", testData{S, Zero, ZtoR}),
+		Entry("L", testData{L, Right, RtoT}),
+		Entry("O", testData{O, Two, TtoL}),
+		Entry("Z", testData{Z, Left, LtoZ}),
+	)
+})
+
+var _ = Describe("rotateCounterClockWise test", func() {
+	type testData struct {
+		shape    Shape
+		rotation Rotation
+		expected Rotate
+	}
+
+	DescribeTable("test cases", func(d testData) {
+		m := newTetromino(d.shape)
+		m.rotate(d.rotation)
+		actual := m.rotateCounterClockWise()
+		Expect(actual).Should(Equal(d.expected))
+	},
+		Entry("S", testData{S, Zero, ZtoL}),
+		Entry("L", testData{L, Left, LtoT}),
+		Entry("O", testData{O, Two, TtoR}),
+		Entry("Z", testData{Z, Right, RtoZ}),
+	)
+})
+
+var _ = Describe("wallkick test", func() {
+	type testData struct {
+		shape          Shape
+		x, y           int
+		rotate         Rotate
+		rotation       Rotation
+		width          int
+		height         int
+		ground         []cell
+		expectedX      int
+		expectedY      int
+		expectedReturn bool
+	}
+
+	DescribeTable("test cases", func(d testData) {
+		g := ground{width: d.width, height: d.height}
 		g.cells = d.ground
 
-		actual := newMino(d.shape)
-		actual.srs(&g, d.rotate)
+		actual := newTetromino(d.shape)
+		actual.x = d.x
+		actual.y = d.y
+		actual.rotate(d.rotation)
+		actualReturn := actual.wallkick(&g, d.rotate)
 
-		expected := newMino(d.shape)
-		expected.x = d.expectedX
-		expected.y = d.expectedY
-
-		diff := deep.Equal(actual, expected)
-		Expect(diff).Should(BeNil())
+		Expect(actualReturn).Should(Equal(d.expectedReturn))
+		Expect(actual.x).Should(Equal(d.expectedX))
+		Expect(actual.y).Should(Equal(d.expectedY))
 	},
-		Entry("J", testData{L, 4, 3, ZtoL, []cell{
+		Entry("I", testData{I, 1, 3, LtoT, Two, 10, 8, []cell{
+			x, x, x, x, x, x, x, x, x, x,
+			x, x, x, x, x, x, x, x, x, x,
+			x, x, x, x, x, x, x, x, x, x,
+			x, x, x, x, x, x, x, x, x, x,
+			o, o, x, o, o, o, o, o, o, o,
+			o, o, x, o, o, o, o, o, o, o,
+			o, o, x, o, o, o, o, o, o, o,
+			o, o, x, o, o, o, o, o, o, o,
+		}, 2, 1, true}),
+		Entry("I", testData{I, 1, 3, LtoT, Two, 10, 8, []cell{
+			x, x, x, x, x, x, x, x, x, x,
+			x, x, x, x, x, x, x, x, x, x,
+			x, x, x, x, x, x, x, x, x, x,
+			o, o, x, o, o, o, o, o, o, o,
+			o, o, x, o, o, o, o, o, o, o,
+			o, o, x, o, o, o, o, o, o, o,
+			o, o, x, o, o, o, o, o, o, o,
+			o, o, x, o, o, o, o, o, o, o,
+		}, 1, 3, false}),
+		Entry("J", testData{J, 3, 2, ZtoL, Left, 10, 8, []cell{
 			x, x, x, x, x, x, x, x, x, x,
 			x, x, x, x, o, o, x, x, x, x,
 			x, x, x, x, x, o, o, o, x, x,
@@ -175,35 +239,35 @@ var _ = Describe("mino srs 테스트 (super rotation system)", func() {
 			o, o, x, x, x, x, o, o, o, o,
 			o, o, o, o, x, x, o, o, o, o,
 			o, o, o, o, o, x, o, o, o, o,
-		}, 6, 2}),
+		}, 4, 4, true}),
 	)
 })
 
 var _ = Describe("random 통제 테스트", func() {
 	It("seed 값이 같으면 동일한 결과가 나온다.", func() {
 		rand.Seed(0)
-		expected := randomMino()
+		expected := randomTetromino()
 
 		rand.Seed(0)
-		actual := randomMino()
+		actual := randomTetromino()
 		diff := deep.Equal(expected.cells, actual.cells)
 		Expect(diff).Should(BeNil())
 	})
 
 	It("seed 값이 다르면 결과도 다르게.", func() {
 		rand.Seed(0)
-		expected := randomMino()
+		expected := randomTetromino()
 
 		rand.Seed(1)
-		actual := randomMino()
+		actual := randomTetromino()
 		diff := deep.Equal(expected.cells, actual.cells)
 		Expect(diff).ShouldNot(BeNil())
 	})
 })
 
-var _ = Describe("mino.RenderInfo() 함수가", func() {
+var _ = Describe("tetromino.RenderInfo() 함수가", func() {
 	It("렌더링 정보를 제대로 반환한다.", func() {
-		m := mino{
+		m := tetromino{
 			cells:    [][]cell{{x, o, x, o}, {o, o, o, o}, {o, o, x, o}, {x, o, o, o}},
 			color:    123,
 			x:        1234,

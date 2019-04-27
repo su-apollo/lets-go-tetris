@@ -2,8 +2,8 @@
 package mocks
 
 import (
-	render "lets-go-tetris/render"
-	sync "sync"
+	"lets-go-tetris/render"
+	"sync"
 )
 
 type Event struct {
