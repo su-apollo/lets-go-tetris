@@ -120,6 +120,7 @@ func (g *ground) removeLines() int {
 				for x := 0; x < g.width; x++ {
 					offset := i*g.width + x
 					g.cells[offset+g.width] = g.cells[offset]
+					g.colors[offset+g.width] = g.colors[offset]
 				}
 			}
 		}

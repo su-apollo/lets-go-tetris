@@ -138,18 +138,20 @@ func (game *Game) handleKeyPlaying(msg event.Msg) {
 		game.now.y--
 		game.nextStep()
 	case event.Escape:
-
+		game.state = Over
 	case event.Pause:
-
+		game.state = Paused
 	}
 }
 
 func (game *Game) handleKeyPaused(msg event.Msg) {
-	panic("Not implemented")
+	switch msg.Key {
+	case event.Pause:
+		game.state = Playing
+	}
 }
 
 func (game *Game) handleKeyGameOver(msg event.Msg) {
-	panic("Not implemented")
 }
 
 func (game *Game) update(delta int64) {
@@ -177,17 +179,29 @@ func (game *Game) updatePlaying(delta int64) {
 			game.now.x = startX
 			game.next = randomTetromino()
 			game.next.x = game.back.width
+
+			if game.back.collide(game.now) {
+				game.state = Over
+			}
 		}
 		game.stepTimer = 0
 	}
 }
 
 func (game *Game) updatePaused(delta int64) {
-	panic("Not implemented")
 }
 
 func (game *Game) updateGameOver(delta int64) {
-	panic("Not implemented")
+	game.back.reset()
+
+	rand.Seed(time.Now().UnixNano())
+	game.now = randomTetromino()
+	game.now.x = startX
+
+	game.next = randomTetromino()
+	game.next.x = game.back.width
+
+	game.state = Playing
 }
 
 func (game *Game) speed() int64 {
