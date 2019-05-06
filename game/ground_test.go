@@ -201,6 +201,7 @@ var _ = Describe("ground removeLines 테스트", func() {
 
 	DescribeTable("테스트 케이스", func(d testData) {
 		g := ground{width: 4, height: 10}
+		g.reset()
 		g.cells = d.before
 
 		actual := g.removeLines()

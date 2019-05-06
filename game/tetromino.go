@@ -305,7 +305,7 @@ func newTetromino(s Shape) *tetromino {
 func (m *tetromino) RenderInfo() []render.Info {
 	var infos []render.Info
 
-	var x, y int = 0, 0
+	var x, y = 0, 0
 	for _, cell := range m.currentCells() {
 		if cell {
 			infos = append(infos, &render.InfoImpl{
