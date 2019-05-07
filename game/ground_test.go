@@ -135,6 +135,7 @@ var _ = Describe("ground collide 테스트", func() {
 	})
 })
 
+/*
 var _ = Describe("ground step 테스트", func() {
 	g := ground{width: 4, height: 10}
 	g.reset()
@@ -191,6 +192,7 @@ var _ = Describe("ground step 테스트", func() {
 		Expect(diff).Should(BeNil())
 	})
 })
+*/
 
 var _ = Describe("ground removeLines 테스트", func() {
 	type testData struct {

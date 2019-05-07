@@ -24,8 +24,9 @@ type Wrapper struct {
 	deferFn   []fn
 	destroyFn []fn
 
-	window  render.Window
-	surface render.Surface
+	window   render.Window
+	//renderer render.Renderer
+	surface  render.Surface
 }
 
 const shapeX = 4
@@ -57,10 +58,14 @@ func (wrapper *Wrapper) init() error {
 	wrapper.pushFn(func() { window.Destroy() })
 	wrapper.window = window
 
+	//renderer, err := sdl.CreateRenderer(window, -1, sdl.RENDERER_ACCELERATED)
+	//wrapper.renderer = renderer
+
 	surface, err := window.GetSurface()
 	if err != nil {
 		return err
 	}
+	surface.SetBlendMode(sdl.BLENDMODE_BLEND)
 	wrapper.surface = surface
 
 	wrapper.destroyFn = wrapper.deferFn

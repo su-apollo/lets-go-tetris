@@ -62,7 +62,11 @@ func (game *Game) Run() {
 	for {
 		info = info[:0]
 
+		g := &ghost{}
+		g.init(game.back, game.now)
+
 		info = append(info, game.back.RenderInfo()...)
+		info = append(info, g.RenderInfo()...)
 		info = append(info, game.now.RenderInfo()...)
 		info = append(info, game.next.RenderInfo()...)
 
@@ -171,7 +175,7 @@ func (game *Game) update(delta int64) {
 func (game *Game) updatePlaying(delta int64) {
 	game.stepTimer += delta
 	if game.stepTimer > game.speed() {
-		if game.back.step(game.now) {
+		if game.step(game.back, game.now) {
 			_ = game.back.removeLines()
 			//todo : score
 
@@ -211,4 +215,16 @@ func (game *Game) speed() int64 {
 
 func (game *Game) nextStep() {
 	game.stepTimer += game.speed()
+}
+
+func (game *Game) step(g *ground, m *tetromino) bool {
+	m.y++
+	if !g.collide(m) {
+		return false
+	}
+
+	m.y--
+	g.merge(m)
+
+	return true
 }
