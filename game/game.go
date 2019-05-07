@@ -121,12 +121,12 @@ func (game *Game) handleKeyPlaying(msg event.Msg) {
 		}
 	case event.ClockWise:
 		r := game.now.rotateClockWise()
-		if !game.now.wallkick(game.back, r) {
+		if !game.now.wallKick(game.back, r) {
 			game.now.rotateCounterClockWise()
 		}
 	case event.CounterClockWise:
 		r := game.now.rotateCounterClockWise()
-		if !game.now.wallkick(game.back, r) {
+		if !game.now.wallKick(game.back, r) {
 			game.now.rotateClockWise()
 		}
 	case event.Drop:
