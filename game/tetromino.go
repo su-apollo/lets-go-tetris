@@ -58,176 +58,176 @@ const (
 )
 
 const i0 = `
-0000
-1111
-0000
-0000
+oooo
+xxxx
+oooo
+oooo
 `
 
 const i1 = `
-0010
-0010
-0010
-0010
+ooxo
+ooxo
+ooxo
+ooxo
 `
 
 const i2 = `
-0000
-0000
-1111
-0000
+oooo
+oooo
+xxxx
+oooo
 `
 
 const i3 = `
-0100
-0100
-0100
-0100
+oxoo
+oxoo
+oxoo
+oxoo
 `
 
 const j0 = `
-1000
-1110
-0000
-0000
+xooo
+xxxo
+oooo
+oooo
 `
 
 const j1 = `
-0110
-0100
-0100
-0000
+oxxo
+oxoo
+oxoo
+oooo
 `
 
 const j2 = `
-0000
-1110
-0010
-0000
+oooo
+xxxo
+ooxo
+oooo
 `
 
 const j3 = `
-0100
-0100
-1100
-0000
+oxoo
+oxoo
+xxoo
+oooo
 `
 
 const s0 = `
-0110
-1100
-0000
-0000
+oxxo
+xxoo
+oooo
+oooo
 `
 
 const s1 = `
-0100
-0110
-0010
-0000
+oxoo
+oxxo
+ooxo
+oooo
 `
 
 const s2 = `
-0000
-0110
-1100
-0000
+oooo
+oxxo
+xxoo
+oooo
 `
 
 const s3 = `
-1000
-1100
-0100
-0000
+xooo
+xxoo
+oxoo
+oooo
 `
 
 const z0 = `
-1100
-0110
-0000
-0000
+xxoo
+oxxo
+oooo
+oooo
 `
 
 const z1 = `
-0010
-0110
-0100
-0000
+ooxo
+oxxo
+oxoo
+oooo
 `
 
 const z2 = `
-0000
-1100
-0110
-0000
+oooo
+xxoo
+oxxo
+oooo
 `
 const z3 = `
-0100
-1100
-1000
-0000
+oxoo
+xxoo
+xooo
+oooo
 `
 
 const t0 = `
-0100
-1110
-0000
-0000
+oxoo
+xxxo
+oooo
+oooo
 `
 
 const t1 = `
-0100
-0110
-0100
-0000
+oxoo
+oxxo
+oxoo
+oooo
 `
 const t2 = `
-0000
-1110
-0100
-0000
+oooo
+xxxo
+oxoo
+oooo
 `
 
 const t3 = `
-0100
-1100
-0100
-0000
+oxoo
+xxoo
+oxoo
+oooo
 `
 
 const o0 = `
-0110
-0110
-0000
-0000
+oxxo
+oxxo
+oooo
+oooo
 `
 
 const l0 = `
-0010
-1110
-0000
-0000
+ooxo
+xxxo
+oooo
+oooo
 `
 
 const l1 = `
-0100
-0100
-0110
-0000
+oxoo
+oxoo
+oxxo
+oooo
 `
 
 const l2 = `
-0000
-1110
-1000
-0000
+oooo
+xxxo
+xooo
+oooo
 `
 
 const l3 = `
-1100
-0100
-0100
-0000
+xxoo
+oxoo
+oxoo
+oooo
 `
 
 var shapes = [][]string{
@@ -332,10 +332,10 @@ func (m *tetromino) init(rotationShapes []string) {
 		i := 0
 		for _, c := range shape {
 			switch c {
-			case '1':
+			case 'x':
 				m.cells[r][i] = true
 				fallthrough
-			case '0':
+			case 'o':
 				i++
 			}
 		}
@@ -378,7 +378,7 @@ func (m *tetromino) rotate(r Rotation) {
 	m.rotation = (r%RotationMax + RotationMax) % RotationMax
 }
 
-func (m *tetromino) wallkick(g *ground, r Rotate) bool {
+func (m *tetromino) wallKick(g *ground, r Rotate) bool {
 	if m.shape == I {
 		for _, v := range iKicks[r] {
 			m.x += v[0]

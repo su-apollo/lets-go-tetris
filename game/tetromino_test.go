@@ -182,7 +182,7 @@ var _ = Describe("rotateCounterClockWise test", func() {
 	)
 })
 
-var _ = Describe("wallkick test", func() {
+var _ = Describe("wallKick test", func() {
 	type testData struct {
 		shape          Shape
 		x, y           int
@@ -204,7 +204,7 @@ var _ = Describe("wallkick test", func() {
 		actual.x = d.x
 		actual.y = d.y
 		actual.rotate(d.rotation)
-		actualReturn := actual.wallkick(&g, d.rotate)
+		actualReturn := actual.wallKick(&g, d.rotate)
 
 		Expect(actualReturn).Should(Equal(d.expectedReturn))
 		Expect(actual.x).Should(Equal(d.expectedX))
