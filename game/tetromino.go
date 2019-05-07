@@ -306,7 +306,7 @@ func (m *tetromino) RenderInfo() []render.Info {
 	var infos []render.Info
 
 	var x, y = 0, 0
-	for _, cell := range m.currentCells() {
+	for _, cell := range m.getCells() {
 		if cell {
 			infos = append(infos, &render.InfoImpl{
 				PosX: m.x + x, PosY: m.y + y, Color: m.color,
@@ -403,6 +403,14 @@ func (m *tetromino) wallKick(g *ground, r Rotate) bool {
 	return false
 }
 
-func (m *tetromino) currentCells() []cell {
+func (m *tetromino) getCells() []cell {
 	return m.cells[m.rotation]
+}
+
+func (m *tetromino) getPosition() (int, int) {
+	return m.x, m.y
+}
+
+func (m *tetromino) getColor() uint32 {
+	return m.color
 }

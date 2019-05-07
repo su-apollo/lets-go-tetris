@@ -9,6 +9,12 @@ var tileColors = []uint32{
 	0xff5D5D5D,
 }
 
+type block interface {
+	getCells() []cell
+	getPosition() (int, int)
+	getColor() uint32
+}
+
 type ground struct {
 	width, height int
 	cells         []cell
@@ -44,24 +50,13 @@ func (g *ground) reset() {
 	g.colors = make([]uint32, g.width*g.height)
 }
 
-func (g *ground) step(m *tetromino) bool {
-	m.y++
-	if !g.collide(m) {
-		return false
-	}
-
-	m.y--
-	g.merge(m)
-
-	return true
-}
-
-func (g *ground) collide(m *tetromino) bool {
+func (g *ground) collide(m block) bool {
 	var x, y = 0, 0
-	for _, cell := range m.currentCells() {
+	for _, cell := range m.getCells() {
 		if cell {
-			cx := m.x + x
-			cy := m.y + y
+			cx, cy := m.getPosition()
+			cx += x
+			cy += y
 
 			if cx < 0 || g.width <= cx || cy < 0 || g.height <= cy {
 				return true
@@ -81,16 +76,17 @@ func (g *ground) collide(m *tetromino) bool {
 	return false
 }
 
-func (g *ground) merge(m *tetromino) {
+func (g *ground) merge(m block) {
 	var x, y = 0, 0
-	for _, cell := range m.currentCells() {
+	for _, cell := range m.getCells() {
 		if cell {
-			cx := m.x + x
-			cy := m.y + y
+			cx, cy := m.getPosition()
+			cx += x
+			cy += y
 
 			if 0 <= cx && cx < g.width && 0 <= cy && cy < g.height {
 				g.cells[cy*g.width+cx] = true
-				g.colors[cy*g.width+cx] = m.color
+				g.colors[cy*g.width+cx] = m.getColor()
 			}
 		}
 
