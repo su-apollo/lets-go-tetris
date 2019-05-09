@@ -1,4 +1,4 @@
-package event
+package game
 
 // Key 타입은 게임에서 입력으로 발생할 수 있는 이벤트의 종류다.
 type Key int
