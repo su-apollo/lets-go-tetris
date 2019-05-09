@@ -5,7 +5,6 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/ginkgo/extensions/table"
 	. "github.com/onsi/gomega"
-	"lets-go-tetris/render"
 	"math/rand"
 )
 
@@ -18,7 +17,7 @@ var _ = Describe("tetromino initialize test", func() {
 	DescribeTable("test cases", func(d testData) {
 		m := tetromino{}
 		m.init(d.input)
-		actual := m.getCells()
+		actual := m.GetCells()
 		diff := deep.Equal(actual, d.expected)
 		Expect(diff).Should(BeNil())
 	},
@@ -77,7 +76,7 @@ var _ = Describe("newTetromino test", func() {
 			x, x, x, x,
 		}
 
-		actual := m.getCells()
+		actual := m.GetCells()
 		diff := deep.Equal(actual, expected)
 		Expect(diff).Should(BeNil())
 	})
@@ -93,7 +92,7 @@ var _ = Describe("rotate test", func() {
 	DescribeTable("test cases", func(d testData) {
 		m := newTetromino(d.shape)
 		m.rotate(d.rotation)
-		actual := m.getCells()
+		actual := m.GetCells()
 		diff := deep.Equal(actual, d.expected)
 		Expect(diff).Should(BeNil())
 	},
@@ -155,10 +154,10 @@ var _ = Describe("rotateClockWise test", func() {
 		actual := m.rotateClockWise()
 		Expect(actual).Should(Equal(d.expected))
 	},
-		Entry("S", testData{S, Zero, ZtoR}),
-		Entry("L", testData{L, Right, RtoT}),
-		Entry("O", testData{O, Two, TtoL}),
-		Entry("Z", testData{Z, Left, LtoZ}),
+		Entry("S", testData{S, ZeroRotation, ZtoR}),
+		Entry("L", testData{L, RightRotation, RtoT}),
+		Entry("O", testData{O, TwoRotation, TtoL}),
+		Entry("Z", testData{Z, LeftRotation, LtoZ}),
 	)
 })
 
@@ -175,10 +174,10 @@ var _ = Describe("rotateCounterClockWise test", func() {
 		actual := m.rotateCounterClockWise()
 		Expect(actual).Should(Equal(d.expected))
 	},
-		Entry("S", testData{S, Zero, ZtoL}),
-		Entry("L", testData{L, Left, LtoT}),
-		Entry("O", testData{O, Two, TtoR}),
-		Entry("Z", testData{Z, Right, RtoZ}),
+		Entry("S", testData{S, ZeroRotation, ZtoL}),
+		Entry("L", testData{L, LeftRotation, LtoT}),
+		Entry("O", testData{O, TwoRotation, TtoR}),
+		Entry("Z", testData{Z, RightRotation, RtoZ}),
 	)
 })
 
@@ -197,7 +196,7 @@ var _ = Describe("wallKick test", func() {
 	}
 
 	DescribeTable("test cases", func(d testData) {
-		g := ground{width: d.width, height: d.height}
+		g := matrix{width: d.width, height: d.height}
 		g.cells = d.ground
 
 		actual := newTetromino(d.shape)
@@ -210,7 +209,7 @@ var _ = Describe("wallKick test", func() {
 		Expect(actual.x).Should(Equal(d.expectedX))
 		Expect(actual.y).Should(Equal(d.expectedY))
 	},
-		Entry("I", testData{I, 1, 3, LtoT, Two, 10, 8, []cell{
+		Entry("I", testData{I, 1, 3, LtoT, TwoRotation, 10, 8, []cell{
 			x, x, x, x, x, x, x, x, x, x,
 			x, x, x, x, x, x, x, x, x, x,
 			x, x, x, x, x, x, x, x, x, x,
@@ -220,7 +219,7 @@ var _ = Describe("wallKick test", func() {
 			o, o, x, o, o, o, o, o, o, o,
 			o, o, x, o, o, o, o, o, o, o,
 		}, 2, 1, true}),
-		Entry("I", testData{I, 1, 3, LtoT, Two, 10, 8, []cell{
+		Entry("I", testData{I, 1, 3, LtoT, TwoRotation, 10, 8, []cell{
 			x, x, x, x, x, x, x, x, x, x,
 			x, x, x, x, x, x, x, x, x, x,
 			x, x, x, x, x, x, x, x, x, x,
@@ -230,7 +229,7 @@ var _ = Describe("wallKick test", func() {
 			o, o, x, o, o, o, o, o, o, o,
 			o, o, x, o, o, o, o, o, o, o,
 		}, 1, 3, false}),
-		Entry("J", testData{J, 3, 2, ZtoL, Left, 10, 8, []cell{
+		Entry("J", testData{J, 3, 2, ZtoL, LeftRotation, 10, 8, []cell{
 			x, x, x, x, x, x, x, x, x, x,
 			x, x, x, x, o, o, x, x, x, x,
 			x, x, x, x, x, o, o, o, x, x,
@@ -262,23 +261,5 @@ var _ = Describe("random 통제 테스트", func() {
 		actual := randomTetromino()
 		diff := deep.Equal(expected.cells, actual.cells)
 		Expect(diff).ShouldNot(BeNil())
-	})
-})
-
-var _ = Describe("tetromino.RenderInfo() 함수가", func() {
-	It("렌더링 정보를 제대로 반환한다.", func() {
-		m := tetromino{
-			cells:    [][]cell{{x, o, x, o}, {o, o, o, o}, {o, o, x, o}, {x, o, o, o}},
-			color:    123,
-			x:        1234,
-			y:        4321,
-			rotation: 0,
-		}
-		expected := []render.Info{
-			&render.InfoImpl{PosX: 1 + 1234, PosY: 4321, Color: 123},
-			&render.InfoImpl{PosX: 3 + 1234, PosY: 4321, Color: 123},
-		}
-		actual := m.RenderInfo()
-		Expect(actual).Should(Equal(expected))
 	})
 })

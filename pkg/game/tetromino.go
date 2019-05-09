@@ -1,7 +1,6 @@
 package game
 
 import (
-	"lets-go-tetris/render"
 	"math/rand"
 )
 
@@ -38,10 +37,10 @@ type Rotate int
 
 // Rotation 타입 총 4방향
 const (
-	Zero Rotation = 0 + iota
-	Right
-	Two
-	Left
+	ZeroRotation Rotation = 0 + iota
+	RightRotation
+	TwoRotation
+	LeftRotation
 	RotationMax
 )
 
@@ -289,43 +288,23 @@ type tetromino struct {
 
 func randomTetromino() *tetromino {
 	s := rand.Intn(len(shapes) - 1)
-	m := &tetromino{color: colors[s]}
-	m.init(shapes[s])
-	m.shape = Shape(s)
-	return m
+	t := &tetromino{color: colors[s]}
+	t.init(shapes[s])
+	t.shape = Shape(s)
+	return t
 }
 
 func newTetromino(s Shape) *tetromino {
-	m := &tetromino{color: colors[s]}
-	m.init(shapes[s])
-	m.shape = s
-	return m
+	t := &tetromino{color: colors[s]}
+	t.init(shapes[s])
+	t.shape = s
+	return t
 }
 
-func (m *tetromino) RenderInfo() []render.Info {
-	var infos []render.Info
-
-	var x, y = 0, 0
-	for _, cell := range m.getCells() {
-		if cell {
-			infos = append(infos, &render.InfoImpl{
-				PosX: m.x + x, PosY: m.y + y, Color: m.color,
-			})
-		}
-		x++
-		if x%shapeX == 0 {
-			x = 0
-			y++
-		}
-	}
-
-	return infos
-}
-
-func (m *tetromino) init(rotationShapes []string) {
-	m.cells = make([][]cell, RotationMax)
-	for i := range m.cells {
-		m.cells[i] = make([]cell, shapeX*shapeY)
+func (t *tetromino) init(rotationShapes []string) {
+	t.cells = make([][]cell, RotationMax)
+	for i := range t.cells {
+		t.cells[i] = make([]cell, shapeX*shapeY)
 	}
 
 	for r, shape := range rotationShapes {
@@ -333,7 +312,7 @@ func (m *tetromino) init(rotationShapes []string) {
 		for _, c := range shape {
 			switch c {
 			case 'x':
-				m.cells[r][i] = true
+				t.cells[r][i] = true
 				fallthrough
 			case 'o':
 				i++
@@ -342,75 +321,75 @@ func (m *tetromino) init(rotationShapes []string) {
 	}
 }
 
-func (m *tetromino) rotateClockWise() Rotate {
+func (t *tetromino) rotateClockWise() Rotate {
 	var r Rotate
-	switch m.rotation {
-	case Zero:
+	switch t.rotation {
+	case ZeroRotation:
 		r = ZtoR
-	case Right:
+	case RightRotation:
 		r = RtoT
-	case Two:
+	case TwoRotation:
 		r = TtoL
-	case Left:
+	case LeftRotation:
 		r = LtoZ
 	}
-	m.rotate(m.rotation + 1)
+	t.rotate(t.rotation + 1)
 	return r
 }
 
-func (m *tetromino) rotateCounterClockWise() Rotate {
+func (t *tetromino) rotateCounterClockWise() Rotate {
 	var r Rotate
-	switch m.rotation {
-	case Zero:
+	switch t.rotation {
+	case ZeroRotation:
 		r = ZtoL
-	case Right:
+	case RightRotation:
 		r = RtoZ
-	case Two:
+	case TwoRotation:
 		r = TtoR
-	case Left:
+	case LeftRotation:
 		r = LtoT
 	}
-	m.rotate(m.rotation - 1)
+	t.rotate(t.rotation - 1)
 	return r
 }
 
-func (m *tetromino) rotate(r Rotation) {
-	m.rotation = (r%RotationMax + RotationMax) % RotationMax
+func (t *tetromino) rotate(r Rotation) {
+	t.rotation = (r%RotationMax + RotationMax) % RotationMax
 }
 
-func (m *tetromino) wallKick(g *ground, r Rotate) bool {
-	if m.shape == I {
+func (t *tetromino) wallKick(g *matrix, r Rotate) bool {
+	if t.shape == I {
 		for _, v := range iKicks[r] {
-			m.x += v[0]
-			m.y += v[1]
-			if !g.collide(m) {
+			t.x += v[0]
+			t.y += v[1]
+			if !g.collide(t) {
 				return true
 			}
-			m.x -= v[0]
-			m.y -= v[1]
+			t.x -= v[0]
+			t.y -= v[1]
 		}
 	} else {
 		for _, v := range wallKicks[r] {
-			m.x += v[0]
-			m.y += v[1]
-			if !g.collide(m) {
+			t.x += v[0]
+			t.y += v[1]
+			if !g.collide(t) {
 				return true
 			}
-			m.x -= v[0]
-			m.y -= v[1]
+			t.x -= v[0]
+			t.y -= v[1]
 		}
 	}
 	return false
 }
 
-func (m *tetromino) getCells() []cell {
-	return m.cells[m.rotation]
+func (t *tetromino) GetCells() []cell {
+	return t.cells[t.rotation]
 }
 
-func (m *tetromino) getPosition() (int, int) {
-	return m.x, m.y
+func (t *tetromino) GetPosition() (int, int) {
+	return t.x, t.y
 }
 
-func (m *tetromino) getColor() uint32 {
-	return m.color
+func (t *tetromino) GetColor() uint32 {
+	return t.color
 }
