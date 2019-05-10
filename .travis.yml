@@ -2,10 +2,7 @@ language: go
 go:
 - 1.12.x
 before_install:
-- |
-  apt update
-  apt install libsdl2{,-image,-mixer,-ttf,-gfx}-dev
-  chmod +x ./sonar.sh
+- chmod +x ./sonar.sh
 script:
 - make lint
 - make test
@@ -13,6 +10,10 @@ script:
 after_script:
 - make cover
 addons:
+  apt:
+    packages:
+      - libsdl2-2.0-8
+      - libsdl2-image-2.0-4
   sonarcloud: true
 env:
   global:
