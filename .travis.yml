@@ -3,6 +3,7 @@ go:
 - 1.12.x
 before_install:
 - |
+  apt update
   apt install libsdl2{,-image,-mixer,-ttf,-gfx}-dev
   chmod +x ./sonar.sh
 script:
