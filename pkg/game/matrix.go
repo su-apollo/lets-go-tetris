@@ -27,6 +27,12 @@ func (m *matrix) GetColor(x int, y int) Color {
 	}
 }
 
+func newMatrix(w int, h int) *matrix {
+	m := matrix{width: w, height: h}
+	m.reset()
+	return &m
+}
+
 func (m *matrix) reset() {
 	m.cells = make([][]Cell, m.height)
 	for i := range m.cells {
