@@ -287,16 +287,6 @@ func (t *tetromino) GetColor() Color {
 	return t.color
 }
 
-/*
-func randomTetromino() *tetromino {
-	s := rand.Intn(len(shapes) - 1)
-	t := &tetromino{color: colors[s]}
-	t.init(shapes[s])
-	t.shape = Shape(s)
-	return t
-}
-*/
-
 func newTetromino(s Shape) *tetromino {
 	t := &tetromino{color: colors[s]}
 	t.init(shapes[s])

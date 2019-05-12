@@ -13,13 +13,15 @@ var _ = Describe("tetromino initialize test", func() {
 		expected [][]Cell
 	}
 
-	DescribeTable("test cases", func(d testData) {
-		m := tetromino{}
-		m.init(d.input)
-		actual := m.GetCells()
-		diff := deep.Equal(actual, d.expected)
-		Expect(diff).Should(BeNil())
-	},
+	DescribeTable(
+		"test cases",
+		func(d testData) {
+			m := tetromino{}
+			m.init(d.input)
+			actual := m.GetCells()
+			diff := deep.Equal(actual, d.expected)
+			Expect(diff).Should(BeNil())
+		},
 		Entry("S", testData{shapes[S], [][]Cell{
 			{x, o, o, x},
 			{o, o, x, x},
@@ -88,13 +90,15 @@ var _ = Describe("rotate test", func() {
 		expected [][]Cell
 	}
 
-	DescribeTable("test cases", func(d testData) {
-		m := newTetromino(d.shape)
-		m.rotate(d.rotation)
-		actual := m.GetCells()
-		diff := deep.Equal(actual, d.expected)
-		Expect(diff).Should(BeNil())
-	},
+	DescribeTable(
+		"test cases",
+		func(d testData) {
+			m := newTetromino(d.shape)
+			m.rotate(d.rotation)
+			actual := m.GetCells()
+			diff := deep.Equal(actual, d.expected)
+			Expect(diff).Should(BeNil())
+		},
 		Entry("S", testData{S, -1, [][]Cell{
 			{o, x, x, x},
 			{o, o, x, x},
@@ -147,12 +151,14 @@ var _ = Describe("rotateClockWise test", func() {
 		expected Rotate
 	}
 
-	DescribeTable("test cases", func(d testData) {
-		m := newTetromino(d.shape)
-		m.rotate(d.rotation)
-		actual := m.rotateClockWise()
-		Expect(actual).Should(Equal(d.expected))
-	},
+	DescribeTable(
+		"test cases",
+		func(d testData) {
+			m := newTetromino(d.shape)
+			m.rotate(d.rotation)
+			actual := m.rotateClockWise()
+			Expect(actual).Should(Equal(d.expected))
+		},
 		Entry("S", testData{S, ZeroRotation, ZtoR}),
 		Entry("L", testData{L, RightRotation, RtoT}),
 		Entry("O", testData{O, TwoRotation, TtoL}),
@@ -167,12 +173,14 @@ var _ = Describe("rotateCounterClockWise test", func() {
 		expected Rotate
 	}
 
-	DescribeTable("test cases", func(d testData) {
-		m := newTetromino(d.shape)
-		m.rotate(d.rotation)
-		actual := m.rotateCounterClockWise()
-		Expect(actual).Should(Equal(d.expected))
-	},
+	DescribeTable(
+		"test cases",
+		func(d testData) {
+			m := newTetromino(d.shape)
+			m.rotate(d.rotation)
+			actual := m.rotateCounterClockWise()
+			Expect(actual).Should(Equal(d.expected))
+		},
 		Entry("S", testData{S, ZeroRotation, ZtoL}),
 		Entry("L", testData{L, LeftRotation, LtoT}),
 		Entry("O", testData{O, TwoRotation, TtoR}),
@@ -182,85 +190,107 @@ var _ = Describe("rotateCounterClockWise test", func() {
 
 var _ = Describe("wallKick test", func() {
 	type testData struct {
-		shape          Shape
-		x, y           int
-		rotate         Rotate
-		rotation       Rotation
-		width          int
-		height         int
-		matrix         [][]Cell
-		expectedX      int
-		expectedY      int
-		expectedReturn bool
+		shape    Shape
+		x, y     int
+		rotate   Rotate
+		rotation Rotation
+		width    int
+		height   int
+		matrix   [][]Cell
 	}
 
-	DescribeTable("test cases", func(d testData) {
-		g := matrix{width: d.width, height: d.height}
-		g.cells = d.matrix
+	type expectedData struct {
+		x, y  int
+		value bool
+	}
 
-		actual := newTetromino(d.shape)
-		actual.x = d.x
-		actual.y = d.y
-		actual.rotate(d.rotation)
-		actualReturn := actual.wallKick(&g, d.rotate)
+	DescribeTable(
+		"test cases",
+		func(d testData, e expectedData) {
+			g := matrix{width: d.width, height: d.height}
+			g.cells = d.matrix
 
-		Expect(actualReturn).Should(Equal(d.expectedReturn))
-		Expect(actual.x).Should(Equal(d.expectedX))
-		Expect(actual.y).Should(Equal(d.expectedY))
-	},
-		Entry("I", testData{I, 1, 3, LtoT, TwoRotation, 10, 8, [][]Cell{
-			{x, x, x, x, x, x, x, x, x, x},
-			{x, x, x, x, x, x, x, x, x, x},
-			{x, x, x, x, x, x, x, x, x, x},
-			{x, x, x, x, x, x, x, x, x, x},
-			{o, o, x, o, o, o, o, o, o, o},
-			{o, o, x, o, o, o, o, o, o, o},
-			{o, o, x, o, o, o, o, o, o, o},
-			{o, o, x, o, o, o, o, o, o, o},
-		}, 2, 1, true}),
-		Entry("I", testData{I, 1, 3, LtoT, TwoRotation, 10, 8, [][]Cell{
-			{x, x, x, x, x, x, x, x, x, x},
-			{x, x, x, x, x, x, x, x, x, x},
-			{x, x, x, x, x, x, x, x, x, x},
-			{o, o, x, o, o, o, o, o, o, o},
-			{o, o, x, o, o, o, o, o, o, o},
-			{o, o, x, o, o, o, o, o, o, o},
-			{o, o, x, o, o, o, o, o, o, o},
-			{o, o, x, o, o, o, o, o, o, o},
-		}, 1, 3, false}),
-		Entry("J", testData{J, 3, 2, ZtoL, LeftRotation, 10, 8, [][]Cell{
-			{x, x, x, x, x, x, x, x, x, x},
-			{x, x, x, x, o, o, x, x, x, x},
-			{x, x, x, x, x, o, o, o, x, x},
-			{x, x, x, x, x, x, o, o, o, o},
-			{x, o, o, o, x, x, x, o, o, o},
-			{o, o, x, x, x, x, o, o, o, o},
-			{o, o, o, o, x, x, o, o, o, o},
-			{o, o, o, o, o, x, o, o, o, o},
-		}, 4, 4, true}),
+			actual := newTetromino(d.shape)
+			actual.x = d.x
+			actual.y = d.y
+			actual.rotate(d.rotation)
+			actualReturn := actual.wallKick(&g, d.rotate)
+
+			Expect(actualReturn).Should(Equal(e.value))
+			Expect(actual.x).Should(Equal(e.x))
+			Expect(actual.y).Should(Equal(e.y))
+		},
+		Entry("I",
+			testData{
+				I,
+				1,
+				3,
+				LtoT,
+				TwoRotation,
+				10,
+				8,
+				[][]Cell{
+					{x, x, x, x, x, x, x, x, x, x},
+					{x, x, x, x, x, x, x, x, x, x},
+					{x, x, x, x, x, x, x, x, x, x},
+					{x, x, x, x, x, x, x, x, x, x},
+					{o, o, x, o, o, o, o, o, o, o},
+					{o, o, x, o, o, o, o, o, o, o},
+					{o, o, x, o, o, o, o, o, o, o},
+					{o, o, x, o, o, o, o, o, o, o},
+				}},
+			expectedData{
+				2,
+				1,
+				true,
+			}),
+		Entry("I",
+			testData{
+				I,
+				1,
+				3,
+				LtoT,
+				TwoRotation,
+				10,
+				8,
+				[][]Cell{
+					{x, x, x, x, x, x, x, x, x, x},
+					{x, x, x, x, x, x, x, x, x, x},
+					{x, x, x, x, x, x, x, x, x, x},
+					{o, o, x, o, o, o, o, o, o, o},
+					{o, o, x, o, o, o, o, o, o, o},
+					{o, o, x, o, o, o, o, o, o, o},
+					{o, o, x, o, o, o, o, o, o, o},
+					{o, o, x, o, o, o, o, o, o, o},
+				}},
+			expectedData{
+				1,
+				3,
+				false,
+			}),
+		Entry("J",
+			testData{
+				J,
+				3,
+				2,
+				ZtoL,
+				LeftRotation,
+				10,
+				8,
+				[][]Cell{
+					{x, x, x, x, x, x, x, x, x, x},
+					{x, x, x, x, o, o, x, x, x, x},
+					{x, x, x, x, x, o, o, o, x, x},
+					{x, x, x, x, x, x, o, o, o, o},
+					{x, o, o, o, x, x, x, o, o, o},
+					{o, o, x, x, x, x, o, o, o, o},
+					{o, o, o, o, x, x, o, o, o, o},
+					{o, o, o, o, o, x, o, o, o, o},
+				}},
+			expectedData{
+				4,
+				4,
+				true,
+			}),
 	)
 })
-
-/*
-var _ = Describe("random 통제 테스트", func() {
-	It("seed 값이 같으면 동일한 결과가 나온다.", func() {
-		rand.Seed(0)
-		expected := randomTetromino()
-
-		rand.Seed(0)
-		actual := randomTetromino()
-		diff := deep.Equal(expected.cells, actual.cells)
-		Expect(diff).Should(BeNil())
-	})
-
-	It("seed 값이 다르면 결과도 다르게.", func() {
-		rand.Seed(0)
-		expected := randomTetromino()
-
-		rand.Seed(1)
-		actual := randomTetromino()
-		diff := deep.Equal(expected.cells, actual.cells)
-		Expect(diff).ShouldNot(BeNil())
-	})
-})
-*/

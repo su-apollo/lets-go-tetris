@@ -90,15 +90,27 @@ func (c *Client) Run() error {
 		drawBlock(renderer, g.GetGhostBlock(), c.CellSize, 0)
 		drawBlock(renderer, g.GetNextBlock(), c.CellSize, c.Width)
 
-		x := int32((c.Width+uiX)*c.CellSize - 86)
-		y := int32(c.Height*c.CellSize - 115)
-		src := sdl.Rect{W: 172, H: 230}
-		dst := sdl.Rect{X: x, Y: y, W: 86, H: 115}
-		center := sdl.Point{
-			X: dst.W / 2,
-			Y: dst.H / 2,
+		if g.GetState() == game.Paused {
+			w := int32((c.Width + uiX) * c.CellSize)
+			h := int32(c.Height * c.CellSize)
+			src := sdl.Rect{W: 172, H: 230}
+			dst := sdl.Rect{X: 0, Y: 0, W: w, H: h}
+			center := sdl.Point{
+				X: dst.W / 2,
+				Y: dst.H / 2,
+			}
+			renderer.CopyEx(texture, &src, &dst, 0, &center, 0)
+		} else {
+			x := int32((c.Width+uiX)*c.CellSize - 86)
+			y := int32(c.Height*c.CellSize - 115)
+			src := sdl.Rect{W: 172, H: 230}
+			dst := sdl.Rect{X: x, Y: y, W: 86, H: 115}
+			center := sdl.Point{
+				X: dst.W / 2,
+				Y: dst.H / 2,
+			}
+			renderer.CopyEx(texture, &src, &dst, 0, &center, 0)
 		}
-		renderer.CopyEx(texture, &src, &dst, 0, &center, 0)
 
 		renderer.Present()
 	}

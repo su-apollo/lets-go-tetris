@@ -7,16 +7,15 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("matrix reset 테스트", func() {
+var _ = Describe("Test of matrix reset", func() {
 	type testData struct {
 		x, y     int
 		expected [][]Cell
 	}
 
-	DescribeTable("테스트 케이스", func(d testData) {
-		g := matrix{width: d.x, height: d.y}
-		g.reset()
-		actual := g.cells
+	DescribeTable("Test cases", func(d testData) {
+		m := newMatrix(d.x, d.y)
+		actual := m.GetCells()
 		diff := deep.Equal(actual, d.expected)
 		Expect(diff).Should(BeNil())
 	},
@@ -33,22 +32,21 @@ var _ = Describe("matrix reset 테스트", func() {
 	)
 })
 
-var _ = Describe("matrix merge 테스트", func() {
+var _ = Describe("Test of matrix merge", func() {
 	type testData struct {
 		s        Shape
 		x, y     int
 		expected [][]Cell
 	}
 
-	g := matrix{width: 4, height: 10}
-	g.reset()
+	m := newMatrix(4, 10)
 
-	DescribeTable("테스트 케이스", func(d testData) {
-		m := tetromino{x: d.x, y: d.y}
-		m.init(shapes[d.s])
-		g.merge(&m)
+	DescribeTable("Test cases", func(d testData) {
+		t := tetromino{x: d.x, y: d.y}
+		t.init(shapes[d.s])
+		m.merge(&t)
 
-		actual := g.cells
+		actual := m.GetCells()
 		diff := deep.Equal(actual, d.expected)
 		Expect(diff).Should(BeNil())
 	},
@@ -91,127 +89,64 @@ var _ = Describe("matrix merge 테스트", func() {
 	)
 })
 
-var _ = Describe("matrix collide 테스트", func() {
-	It("정상적인 상황에서는 충돌하지 않는다.", func() {
-		g := matrix{width: 4, height: 10}
-		g.reset()
+var _ = Describe("Test of matrix collide", func() {
+	It("Case of not collide", func() {
+		m := newMatrix(4, 10)
 
-		m := newTetromino(S)
-		g.merge(m)
+		t := newTetromino(S)
+		m.merge(t)
 
-		m = newTetromino(L)
-		m.y = 4
+		t = newTetromino(L)
+		t.y = 4
 
-		actual := g.collide(m)
+		actual := m.collide(t)
 
 		Expect(actual).Should(Equal(false))
 	})
 
-	It("이미 ground에 머지되어있는 블럭과 잘 충돌한다.", func() {
-		g := matrix{width: 4, height: 10}
-		g.reset()
+	It("Case of collide with already merged block", func() {
+		m := newMatrix(4, 10)
 
-		m := newTetromino(S)
-		g.merge(m)
+		t := newTetromino(S)
+		m.merge(t)
 
-		m = newTetromino(L)
-		actual := g.collide(m)
+		t = newTetromino(L)
+		actual := m.collide(t)
 
 		Expect(actual).Should(Equal(true))
 	})
 
-	It("matrix 밖으로 나갔는지 체크한다.", func() {
-		g := matrix{width: 4, height: 10}
-		g.reset()
+	It("Case of out of range matrix", func() {
+		m := newMatrix(4, 10)
 
-		m := newTetromino(I)
-		m.x = 100
-		m.y = 100
+		t := newTetromino(I)
+		t.x = 100
+		t.y = 100
 
-		actual := g.collide(m)
+		actual := m.collide(t)
 
 		Expect(actual).Should(Equal(true))
 	})
 })
 
-/*
-var _ = Describe("matrix step 테스트", func() {
-	g := matrix{width: 4, height: 10}
-	g.reset()
-
-	m := newTetromino(I)
-	m.y = 6
-	g.merge(m)
-
-	m = newTetromino(Z)
-	m.y = 4
-
-	It("블럭이 충돌하지 않으면서 머지되지 않고 한칸 내려갔다.", func() {
-		Expect(g.step(m)).Should(Equal(false))
-
-		expected := []cell{
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			o, o, o, o,
-			x, x, x, x,
-			x, x, x, x,
-		}
-		var y int
-		y = 5
-
-		actual := g.cells
-		diff := deep.Equal(actual, expected)
-		Expect(diff).Should(BeNil())
-		Expect(m.y).Should(Equal(y))
-	})
-
-	It("블럭이 충돌하면서 머지된다.", func() {
-		Expect(g.step(m)).Should(Equal(true))
-
-		expected := []cell{
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			o, o, x, x,
-			x, o, o, x,
-			o, o, o, o,
-			x, x, x, x,
-			x, x, x, x,
-		}
-
-		actual := g.cells
-		diff := deep.Equal(actual, expected)
-		Expect(diff).Should(BeNil())
-	})
-})
-*/
-
-var _ = Describe("matrix removeLines 테스트", func() {
+var _ = Describe("Test of matrix remove lines", func() {
 	type testData struct {
 		expected int
 		before   [][]Cell
 		after    [][]Cell
 	}
 
-	DescribeTable("테스트 케이스", func(d testData) {
-		g := matrix{width: 4, height: 10}
-		g.reset()
-		g.cells = d.before
+	DescribeTable("Test cases", func(d testData) {
+		m := newMatrix(4, 10)
+		m.cells = d.before
 
-		actual := g.removeLines()
+		actual := m.removeLines()
 		Expect(actual).Should(Equal(d.expected))
 
-		diff := deep.Equal(g.cells, d.after)
+		diff := deep.Equal(m.cells, d.after)
 		Expect(diff).Should(BeNil())
 	},
-		Entry("1줄", testData{1, [][]Cell{
+		Entry("1 line", testData{1, [][]Cell{
 			{x, x, x, x},
 			{x, x, x, x},
 			{x, x, x, x},
@@ -234,7 +169,7 @@ var _ = Describe("matrix removeLines 테스트", func() {
 			{x, o, x, o},
 			{o, o, x, o},
 		}}),
-		Entry("3줄", testData{3, [][]Cell{
+		Entry("3 lines", testData{3, [][]Cell{
 			{x, x, x, x},
 			{x, x, x, x},
 			{x, x, x, x},
@@ -257,7 +192,7 @@ var _ = Describe("matrix removeLines 테스트", func() {
 			{x, x, x, x},
 			{o, o, x, o},
 		}}),
-		Entry("4줄", testData{4, [][]Cell{
+		Entry("4 lines", testData{4, [][]Cell{
 			{x, x, x, x},
 			{x, x, x, x},
 			{x, x, x, x},

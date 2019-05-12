@@ -19,6 +19,10 @@ type Game struct {
 	stepTimer int64
 }
 
+func (g *Game) GetState() State {
+	return g.state
+}
+
 func (g *Game) GetNowBlock() Block {
 	return g.now
 }
