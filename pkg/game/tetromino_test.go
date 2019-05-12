@@ -11,7 +11,7 @@ import (
 var _ = Describe("tetromino initialize test", func() {
 	type testData struct {
 		input    []string
-		expected []cell
+		expected [][]Cell
 	}
 
 	DescribeTable("test cases", func(d testData) {
@@ -21,47 +21,47 @@ var _ = Describe("tetromino initialize test", func() {
 		diff := deep.Equal(actual, d.expected)
 		Expect(diff).Should(BeNil())
 	},
-		Entry("S", testData{shapes[S], []cell{
-			x, o, o, x,
-			o, o, x, x,
-			x, x, x, x,
-			x, x, x, x,
+		Entry("S", testData{shapes[S], [][]Cell{
+			{x, o, o, x},
+			{o, o, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
 		}}),
-		Entry("Z", testData{shapes[Z], []cell{
-			o, o, x, x,
-			x, o, o, x,
-			x, x, x, x,
-			x, x, x, x,
+		Entry("Z", testData{shapes[Z], [][]Cell{
+			{o, o, x, x},
+			{x, o, o, x},
+			{x, x, x, x},
+			{x, x, x, x},
 		}}),
-		Entry("T", testData{shapes[T], []cell{
-			x, o, x, x,
-			o, o, o, x,
-			x, x, x, x,
-			x, x, x, x,
+		Entry("T", testData{shapes[T], [][]Cell{
+			{x, o, x, x},
+			{o, o, o, x},
+			{x, x, x, x},
+			{x, x, x, x},
 		}}),
-		Entry("I", testData{shapes[I], []cell{
-			x, x, x, x,
-			o, o, o, o,
-			x, x, x, x,
-			x, x, x, x,
+		Entry("I", testData{shapes[I], [][]Cell{
+			{x, x, x, x},
+			{o, o, o, o},
+			{x, x, x, x},
+			{x, x, x, x},
 		}}),
-		Entry("O", testData{shapes[O], []cell{
-			x, o, o, x,
-			x, o, o, x,
-			x, x, x, x,
-			x, x, x, x,
+		Entry("O", testData{shapes[O], [][]Cell{
+			{x, o, o, x},
+			{x, o, o, x},
+			{x, x, x, x},
+			{x, x, x, x},
 		}}),
-		Entry("L", testData{shapes[L], []cell{
-			x, x, o, x,
-			o, o, o, x,
-			x, x, x, x,
-			x, x, x, x,
+		Entry("L", testData{shapes[L], [][]Cell{
+			{x, x, o, x},
+			{o, o, o, x},
+			{x, x, x, x},
+			{x, x, x, x},
 		}}),
-		Entry("J", testData{shapes[J], []cell{
-			o, x, x, x,
-			o, o, o, x,
-			x, x, x, x,
-			x, x, x, x,
+		Entry("J", testData{shapes[J], [][]Cell{
+			{o, x, x, x},
+			{o, o, o, x},
+			{x, x, x, x},
+			{x, x, x, x},
 		}}),
 	)
 })
@@ -69,11 +69,11 @@ var _ = Describe("tetromino initialize test", func() {
 var _ = Describe("newTetromino test", func() {
 	It("Succes return s mino", func() {
 		m := newTetromino(S)
-		expected := []cell{
-			x, o, o, x,
-			o, o, x, x,
-			x, x, x, x,
-			x, x, x, x,
+		expected := [][]Cell{
+			{x, o, o, x},
+			{o, o, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
 		}
 
 		actual := m.GetCells()
@@ -86,7 +86,7 @@ var _ = Describe("rotate test", func() {
 	type testData struct {
 		shape    Shape
 		rotation Rotation
-		expected []cell
+		expected [][]Cell
 	}
 
 	DescribeTable("test cases", func(d testData) {
@@ -96,47 +96,47 @@ var _ = Describe("rotate test", func() {
 		diff := deep.Equal(actual, d.expected)
 		Expect(diff).Should(BeNil())
 	},
-		Entry("S", testData{S, -1, []cell{
-			o, x, x, x,
-			o, o, x, x,
-			x, o, x, x,
-			x, x, x, x,
+		Entry("S", testData{S, -1, [][]Cell{
+			{o, x, x, x},
+			{o, o, x, x},
+			{x, o, x, x},
+			{x, x, x, x},
 		}}),
-		Entry("Z", testData{Z, 6, []cell{
-			x, x, x, x,
-			o, o, x, x,
-			x, o, o, x,
-			x, x, x, x,
+		Entry("Z", testData{Z, 6, [][]Cell{
+			{x, x, x, x},
+			{o, o, x, x},
+			{x, o, o, x},
+			{x, x, x, x},
 		}}),
-		Entry("T", testData{T, -2, []cell{
-			x, x, x, x,
-			o, o, o, x,
-			x, o, x, x,
-			x, x, x, x,
+		Entry("T", testData{T, -2, [][]Cell{
+			{x, x, x, x},
+			{o, o, o, x},
+			{x, o, x, x},
+			{x, x, x, x},
 		}}),
-		Entry("I", testData{I, 16, []cell{
-			x, x, x, x,
-			o, o, o, o,
-			x, x, x, x,
-			x, x, x, x,
+		Entry("I", testData{I, 16, [][]Cell{
+			{x, x, x, x},
+			{o, o, o, o},
+			{x, x, x, x},
+			{x, x, x, x},
 		}}),
-		Entry("O", testData{O, -4, []cell{
-			x, o, o, x,
-			x, o, o, x,
-			x, x, x, x,
-			x, x, x, x,
+		Entry("O", testData{O, -4, [][]Cell{
+			{x, o, o, x},
+			{x, o, o, x},
+			{x, x, x, x},
+			{x, x, x, x},
 		}}),
-		Entry("L", testData{L, 7, []cell{
-			o, o, x, x,
-			x, o, x, x,
-			x, o, x, x,
-			x, x, x, x,
+		Entry("L", testData{L, 7, [][]Cell{
+			{o, o, x, x},
+			{x, o, x, x},
+			{x, o, x, x},
+			{x, x, x, x},
 		}}),
-		Entry("J", testData{J, -17, []cell{
-			x, o, x, x,
-			x, o, x, x,
-			o, o, x, x,
-			x, x, x, x,
+		Entry("J", testData{J, -17, [][]Cell{
+			{x, o, x, x},
+			{x, o, x, x},
+			{o, o, x, x},
+			{x, x, x, x},
 		}}),
 	)
 })
@@ -189,7 +189,7 @@ var _ = Describe("wallKick test", func() {
 		rotation       Rotation
 		width          int
 		height         int
-		ground         []cell
+		matrix         [][]Cell
 		expectedX      int
 		expectedY      int
 		expectedReturn bool
@@ -197,7 +197,7 @@ var _ = Describe("wallKick test", func() {
 
 	DescribeTable("test cases", func(d testData) {
 		g := matrix{width: d.width, height: d.height}
-		g.cells = d.ground
+		g.cells = d.matrix
 
 		actual := newTetromino(d.shape)
 		actual.x = d.x
@@ -209,35 +209,35 @@ var _ = Describe("wallKick test", func() {
 		Expect(actual.x).Should(Equal(d.expectedX))
 		Expect(actual.y).Should(Equal(d.expectedY))
 	},
-		Entry("I", testData{I, 1, 3, LtoT, TwoRotation, 10, 8, []cell{
-			x, x, x, x, x, x, x, x, x, x,
-			x, x, x, x, x, x, x, x, x, x,
-			x, x, x, x, x, x, x, x, x, x,
-			x, x, x, x, x, x, x, x, x, x,
-			o, o, x, o, o, o, o, o, o, o,
-			o, o, x, o, o, o, o, o, o, o,
-			o, o, x, o, o, o, o, o, o, o,
-			o, o, x, o, o, o, o, o, o, o,
+		Entry("I", testData{I, 1, 3, LtoT, TwoRotation, 10, 8, [][]Cell{
+			{x, x, x, x, x, x, x, x, x, x},
+			{x, x, x, x, x, x, x, x, x, x},
+			{x, x, x, x, x, x, x, x, x, x},
+			{x, x, x, x, x, x, x, x, x, x},
+			{o, o, x, o, o, o, o, o, o, o},
+			{o, o, x, o, o, o, o, o, o, o},
+			{o, o, x, o, o, o, o, o, o, o},
+			{o, o, x, o, o, o, o, o, o, o},
 		}, 2, 1, true}),
-		Entry("I", testData{I, 1, 3, LtoT, TwoRotation, 10, 8, []cell{
-			x, x, x, x, x, x, x, x, x, x,
-			x, x, x, x, x, x, x, x, x, x,
-			x, x, x, x, x, x, x, x, x, x,
-			o, o, x, o, o, o, o, o, o, o,
-			o, o, x, o, o, o, o, o, o, o,
-			o, o, x, o, o, o, o, o, o, o,
-			o, o, x, o, o, o, o, o, o, o,
-			o, o, x, o, o, o, o, o, o, o,
+		Entry("I", testData{I, 1, 3, LtoT, TwoRotation, 10, 8, [][]Cell{
+			{x, x, x, x, x, x, x, x, x, x},
+			{x, x, x, x, x, x, x, x, x, x},
+			{x, x, x, x, x, x, x, x, x, x},
+			{o, o, x, o, o, o, o, o, o, o},
+			{o, o, x, o, o, o, o, o, o, o},
+			{o, o, x, o, o, o, o, o, o, o},
+			{o, o, x, o, o, o, o, o, o, o},
+			{o, o, x, o, o, o, o, o, o, o},
 		}, 1, 3, false}),
-		Entry("J", testData{J, 3, 2, ZtoL, LeftRotation, 10, 8, []cell{
-			x, x, x, x, x, x, x, x, x, x,
-			x, x, x, x, o, o, x, x, x, x,
-			x, x, x, x, x, o, o, o, x, x,
-			x, x, x, x, x, x, o, o, o, o,
-			x, o, o, o, x, x, x, o, o, o,
-			o, o, x, x, x, x, o, o, o, o,
-			o, o, o, o, x, x, o, o, o, o,
-			o, o, o, o, o, x, o, o, o, o,
+		Entry("J", testData{J, 3, 2, ZtoL, LeftRotation, 10, 8, [][]Cell{
+			{x, x, x, x, x, x, x, x, x, x},
+			{x, x, x, x, o, o, x, x, x, x},
+			{x, x, x, x, x, o, o, o, x, x},
+			{x, x, x, x, x, x, o, o, o, o},
+			{x, o, o, o, x, x, x, o, o, o},
+			{o, o, x, x, x, x, o, o, o, o},
+			{o, o, o, o, x, x, o, o, o, o},
+			{o, o, o, o, o, x, o, o, o, o},
 		}, 4, 4, true}),
 	)
 })

@@ -239,7 +239,7 @@ var shapes = [][]string{
 	{z0, z1, z2, z3},
 }
 
-var colors = []uint32{
+var colors = []Color{
 	0xff00d8ff,
 	0xff0100ff,
 	0xffffbb00,
@@ -248,13 +248,6 @@ var colors = []uint32{
 	0xffff00dd,
 	0xffff0000,
 }
-
-type cell bool
-
-const (
-	o cell = true
-	x cell = false
-)
 
 var wallKicks = map[Rotate][][]int{
 	ZtoR: {{0, 0}, {-1, 0}, {-1, -1}, {0, +2}, {-1, +2}},
@@ -281,8 +274,8 @@ var iKicks = map[Rotate][][]int{
 type tetromino struct {
 	shape    Shape
 	x, y     int
-	cells    [][]cell
-	color    uint32
+	cells    [][][]Cell
+	color    Color
 	rotation Rotation
 }
 
@@ -302,20 +295,28 @@ func newTetromino(s Shape) *tetromino {
 }
 
 func (t *tetromino) init(rotationShapes []string) {
-	t.cells = make([][]cell, RotationMax)
+	t.cells = make([][][]Cell, RotationMax)
 	for i := range t.cells {
-		t.cells[i] = make([]cell, shapeX*shapeY)
+		t.cells[i] = make([][]Cell, shapeY)
+		for j := range t.cells[i] {
+			t.cells[i][j] = make([]Cell, shapeX)
+		}
 	}
 
 	for r, shape := range rotationShapes {
 		i := 0
+		j := 0
 		for _, c := range shape {
 			switch c {
 			case 'x':
-				t.cells[r][i] = true
+				t.cells[r][i][j] = true
 				fallthrough
 			case 'o':
-				i++
+				j++
+				if j >= shapeY {
+					i++
+					j = 0
+				}
 			}
 		}
 	}
@@ -382,7 +383,7 @@ func (t *tetromino) wallKick(g *matrix, r Rotate) bool {
 	return false
 }
 
-func (t *tetromino) GetCells() []cell {
+func (t *tetromino) GetCells() [][]Cell {
 	return t.cells[t.rotation]
 }
 
@@ -390,6 +391,6 @@ func (t *tetromino) GetPosition() (int, int) {
 	return t.x, t.y
 }
 
-func (t *tetromino) GetColor() uint32 {
+func (t *tetromino) GetColor() Color {
 	return t.color
 }

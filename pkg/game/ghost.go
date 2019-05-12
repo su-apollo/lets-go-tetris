@@ -3,9 +3,9 @@ package game
 const ghostColor = 0x77ffffff
 
 type ghost struct {
-	cells []cell
+	cells [][]Cell
 	x, y  int
-	color uint32
+	color Color
 }
 
 func (g *ghost) init(m *matrix, t *tetromino) {
@@ -22,7 +22,7 @@ func (g *ghost) init(m *matrix, t *tetromino) {
 	g.y--
 }
 
-func (g *ghost) GetCells() []cell {
+func (g *ghost) GetCells() [][]Cell {
 	return g.cells
 }
 
@@ -30,6 +30,6 @@ func (g *ghost) GetPosition() (int, int) {
 	return g.x, g.y
 }
 
-func (g *ghost) GetColor() uint32 {
+func (g *ghost) GetColor() Color {
 	return g.color
 }

@@ -1,12 +1,20 @@
 package game
 
+type Color uint32
+type Cell bool
+
+const (
+	o Cell = true
+	x Cell = false
+)
+
 type Block interface {
-	GetCells() []cell
+	GetCells() [][]Cell
 	GetPosition() (int, int)
-	GetColor() uint32
+	GetColor() Color
 }
 
 type Board interface {
-	GetCells() []cell
-	GetColors() []uint32
+	GetCells() [][]Cell
+	GetColors() [][]Color
 }
