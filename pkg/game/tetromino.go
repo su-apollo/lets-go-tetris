@@ -240,13 +240,13 @@ var shapes = [][]string{
 }
 
 var colors = []Color{
-	0xff00d8ff,
-	0xff0100ff,
-	0xffffbb00,
-	0xffffe400,
-	0xffabf200,
-	0xffff00dd,
-	0xffff0000,
+	{0x00, 0xd8, 0xff, 0xff},
+	{0x01, 0x00, 0xff, 0xff},
+	{0xff, 0xbb, 0x00, 0xff},
+	{0xff, 0xe4, 0x00, 0xff},
+	{0xab, 0xf2, 0x00, 0xff},
+	{0xff, 0x00, 0xdd, 0xff},
+	{0xff, 0x00, 0x00, 0xff},
 }
 
 var wallKicks = map[Rotate][][]int{
@@ -277,6 +277,18 @@ type tetromino struct {
 	cells    [][][]Cell
 	color    Color
 	rotation Rotation
+}
+
+func (t *tetromino) GetCells() [][]Cell {
+	return t.cells[t.rotation]
+}
+
+func (t *tetromino) GetPosition() (int, int) {
+	return t.x, t.y
+}
+
+func (t *tetromino) GetColor() Color {
+	return t.color
 }
 
 func randomTetromino() *tetromino {
@@ -381,16 +393,4 @@ func (t *tetromino) wallKick(g *matrix, r Rotate) bool {
 		}
 	}
 	return false
-}
-
-func (t *tetromino) GetCells() [][]Cell {
-	return t.cells[t.rotation]
-}
-
-func (t *tetromino) GetPosition() (int, int) {
-	return t.x, t.y
-}
-
-func (t *tetromino) GetColor() Color {
-	return t.color
 }

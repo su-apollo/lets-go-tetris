@@ -1,14 +1,30 @@
 package game
 
 var tileColors = []Color{
-	0xff353535,
-	0xff5D5D5D,
+	{0x35, 0x35, 0x35, 0xff},
+	{0x5d, 0x5d, 0x5d, 0xff},
 }
 
 type matrix struct {
 	width, height int
 	cells         [][]Cell
 	colors        [][]Color
+}
+
+func (m *matrix) GetCells() [][]Cell {
+	return m.cells
+}
+
+func (m *matrix) GetColor(x int, y int) Color {
+	if m.cells[y][x] {
+		return m.colors[y][x]
+	} else {
+		if ((x + y) % 2) == 0 {
+			return tileColors[0]
+		} else {
+			return tileColors[1]
+		}
+	}
 }
 
 func (m *matrix) reset() {
@@ -84,12 +100,4 @@ func (m *matrix) removeLines() int {
 		}
 	}
 	return lines
-}
-
-func (m *matrix) GetCells() [][]Cell {
-	return m.cells
-}
-
-func (m *matrix) GetColors() [][]Color {
-	return m.colors
 }
