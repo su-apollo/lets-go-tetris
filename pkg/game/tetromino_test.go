@@ -5,7 +5,6 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/ginkgo/extensions/table"
 	. "github.com/onsi/gomega"
-	"math/rand"
 )
 
 var _ = Describe("tetromino initialize test", func() {
@@ -242,6 +241,7 @@ var _ = Describe("wallKick test", func() {
 	)
 })
 
+/*
 var _ = Describe("random 통제 테스트", func() {
 	It("seed 값이 같으면 동일한 결과가 나온다.", func() {
 		rand.Seed(0)
@@ -263,3 +263,4 @@ var _ = Describe("random 통제 테스트", func() {
 		Expect(diff).ShouldNot(BeNil())
 	})
 })
+*/

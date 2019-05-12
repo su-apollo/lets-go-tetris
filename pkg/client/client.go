@@ -8,6 +8,7 @@ import (
 )
 
 const uiX = 4
+const uiY = 4
 
 type Client struct {
 	Width, Height int

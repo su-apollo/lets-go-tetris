@@ -12,6 +12,8 @@ type Game struct {
 	state State
 	now   *tetromino
 	next  *tetromino
+	keep  *tetromino
+	stack []Shape
 	mat   *matrix
 
 	stepTimer int64
@@ -23,6 +25,10 @@ func (g *Game) GetNowBlock() Block {
 
 func (g *Game) GetNextBlock() Block {
 	return g.next
+}
+
+func (g *Game) getKeepBlock() Block {
+	return g.keep
 }
 
 func (g *Game) GetGhostBlock() Block {
@@ -64,19 +70,63 @@ func (g *Game) Update(delta int64) {
 }
 
 func New(width int, height int) *Game {
-	m := &matrix{width, height, nil, nil}
-	m.reset()
+	g := &Game{
+		mat: &matrix{width, height, nil, nil},
+	}
+	g.reset()
+	return g
+}
 
-	rand.Seed(time.Now().UnixNano())
-	now := randomTetromino()
-	next := randomTetromino()
-	now.x = startX
+func (g *Game) setNowToNext() {
+	g.now = g.next
+	g.now.x = startX
 
-	return &Game{
-		state: Playing,
-		now:   now,
-		next:  next,
-		mat:   m,
+	s := g.popQueue()
+	g.next = newTetromino(s)
+
+	if g.stack == nil {
+		g.resetStack()
+		g.shuffleStack()
+	}
+}
+
+func (g *Game) reset() {
+	g.mat.reset()
+	g.resetStack()
+	g.shuffleStack()
+
+	s := g.popQueue()
+	g.now = newTetromino(s)
+	g.now.x = startX
+
+	s = g.popQueue()
+	g.next = newTetromino(s)
+
+	g.state = Playing
+}
+
+func (g *Game) resetStack() {
+	g.stack = []Shape{I, J, L, O, S, T, Z}
+}
+
+func (g *Game) shuffleStack() {
+	r := rand.New(rand.NewSource(time.Now().Unix()))
+	for n := len(g.stack); n > 0; n-- {
+		i := r.Intn(n)
+		g.stack[n-1], g.stack[i] = g.stack[i], g.stack[n-1]
+	}
+}
+
+func (g *Game) popQueue() Shape {
+	n := len(g.stack)
+	if n < 2 {
+		v := g.stack[0]
+		g.stack = nil
+		return v
+	} else {
+		v := g.stack[n-1]
+		g.stack = g.stack[:n-1]
+		return v
 	}
 }
 
@@ -140,9 +190,7 @@ func (g *Game) updatePlaying(delta int64) {
 			_ = g.mat.removeLines()
 			//todo : score
 
-			g.now = g.next
-			g.now.x = startX
-			g.next = randomTetromino()
+			g.setNowToNext()
 
 			if g.mat.collide(g.now) {
 				g.state = Over
@@ -156,14 +204,7 @@ func (g *Game) updatePaused(delta int64) {
 }
 
 func (g *Game) updateGameOver(delta int64) {
-	g.mat.reset()
-
-	rand.Seed(time.Now().UnixNano())
-	g.now = randomTetromino()
-	g.next = randomTetromino()
-	g.now.x = startX
-
-	g.state = Playing
+	g.reset()
 }
 
 func (g *Game) speed() int64 {

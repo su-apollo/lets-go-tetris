@@ -1,9 +1,5 @@
 package game
 
-import (
-	"math/rand"
-)
-
 const (
 	shapeX = 4
 	shapeY = 4
@@ -291,6 +287,7 @@ func (t *tetromino) GetColor() Color {
 	return t.color
 }
 
+/*
 func randomTetromino() *tetromino {
 	s := rand.Intn(len(shapes) - 1)
 	t := &tetromino{color: colors[s]}
@@ -298,6 +295,7 @@ func randomTetromino() *tetromino {
 	t.shape = Shape(s)
 	return t
 }
+*/
 
 func newTetromino(s Shape) *tetromino {
 	t := &tetromino{color: colors[s]}
