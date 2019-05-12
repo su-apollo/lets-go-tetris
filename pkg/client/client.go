@@ -50,6 +50,7 @@ func (c *Client) Run() error {
 	}
 	defer texture.Destroy()
 
+	renderer.SetDrawBlendMode(sdl.BLENDMODE_BLEND)
 	renderer.Clear()
 	front := time.Now()
 	running := true
@@ -79,28 +80,68 @@ func (c *Client) Run() error {
 
 		g.Update(delta.Nanoseconds())
 
-		// todo : render
 		renderer.Clear()
-		renderer.SetDrawColor(0, 0, 0, 0x20)
+		renderer.SetDrawColor(0, 0, 0, 0xff)
 		renderer.FillRect(&sdl.Rect{X: 0, Y: 0, W: width, H: height})
 
-		/*
-			board := g.GetBoard()
-			cells := board.GetCells()
-		*/
+		drawBoard(renderer, g.GetBoard(), c.CellSize)
+		drawBlock(renderer, g.GetNowBlock(), c.CellSize, 0)
+		drawBlock(renderer, g.GetGhostBlock(), c.CellSize, 0)
+		drawBlock(renderer, g.GetNextBlock(), c.CellSize, c.Width)
 
-		renderer.SetDrawColor(0xff, 0xff, 0xff, 0xff)
-		renderer.DrawRect(&sdl.Rect{W: int32(c.CellSize), H: int32(c.CellSize)})
-
+		x := int32((c.Width+uiX)*c.CellSize - 86)
+		y := int32(c.Height*c.CellSize - 115)
 		src := sdl.Rect{W: 172, H: 230}
-		dst := sdl.Rect{W: 172, H: 230}
-		center := sdl.Point{X: dst.W / 2, Y: dst.H / 2}
-		renderer.CopyEx(texture, &src, &dst, 30, &center, 0)
+		dst := sdl.Rect{X: x, Y: y, W: 86, H: 115}
+		center := sdl.Point{
+			X: dst.W / 2,
+			Y: dst.H / 2,
+		}
+		renderer.CopyEx(texture, &src, &dst, 0, &center, 0)
 
 		renderer.Present()
 	}
 
 	return nil
+}
+
+func drawBoard(renderer *sdl.Renderer, board game.Board, size int) {
+	for y, line := range board.GetCells() {
+		for x := range line {
+			color := board.GetColor(x, y)
+			renderer.SetDrawColor(color.R, color.G, color.B, color.A)
+			renderer.FillRect(&sdl.Rect{
+				X: int32(x * size),
+				Y: int32(y * size),
+				W: int32(size),
+				H: int32(size),
+			})
+		}
+	}
+}
+
+func drawBlock(renderer *sdl.Renderer, block game.Block, size int, offsetX int) {
+	posX, posY := block.GetPosition()
+	color := block.GetColor()
+	renderer.SetDrawColor(color.R, color.G, color.B, color.A)
+
+	posX += offsetX
+
+	for y, line := range block.GetCells() {
+		for x, cell := range line {
+			if cell {
+				cx := posX + x
+				cy := posY + y
+
+				renderer.FillRect(&sdl.Rect{
+					X: int32(cx * size),
+					Y: int32(cy * size),
+					W: int32(size),
+					H: int32(size),
+				})
+			}
+		}
+	}
 }
 
 func sdlKeyCodeToEvent(k sdl.Keycode) (game.Msg, bool) {

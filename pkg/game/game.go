@@ -5,18 +5,6 @@ import (
 	"time"
 )
 
-// State 타입은 게임의 상태를 나타낸다.
-type State int
-
-// Playing 		게임 진행 중
-// Paused 		일시 정지
-// Over			게임 종료
-const (
-	Playing State = iota
-	Paused
-	Over
-)
-
 const startX = 3
 
 // Game 구조체는 테트리스의 전반 로직을 담당하는 자료구조다.
@@ -27,6 +15,24 @@ type Game struct {
 	mat   *matrix
 
 	stepTimer int64
+}
+
+func (g *Game) GetNowBlock() Block {
+	return g.now
+}
+
+func (g *Game) GetNextBlock() Block {
+	return g.next
+}
+
+func (g *Game) GetGhostBlock() Block {
+	ghost := &ghost{}
+	ghost.init(g.mat, g.now)
+	return ghost
+}
+
+func (g *Game) GetBoard() Board {
+	return g.mat
 }
 
 func (g *Game) HandleKey(msg Msg) {
@@ -63,10 +69,8 @@ func New(width int, height int) *Game {
 
 	rand.Seed(time.Now().UnixNano())
 	now := randomTetromino()
-	now.x = startX
-
 	next := randomTetromino()
-	next.x = width
+	now.x = startX
 
 	return &Game{
 		state: Playing,
@@ -139,7 +143,6 @@ func (g *Game) updatePlaying(delta int64) {
 			g.now = g.next
 			g.now.x = startX
 			g.next = randomTetromino()
-			g.next.x = g.mat.width
 
 			if g.mat.collide(g.now) {
 				g.state = Over
@@ -157,10 +160,8 @@ func (g *Game) updateGameOver(delta int64) {
 
 	rand.Seed(time.Now().UnixNano())
 	g.now = randomTetromino()
-	g.now.x = startX
-
 	g.next = randomTetromino()
-	g.next.x = g.mat.width
+	g.now.x = startX
 
 	g.state = Playing
 }
@@ -184,22 +185,4 @@ func (g *Game) step(m *matrix, t *tetromino) bool {
 	m.merge(t)
 
 	return true
-}
-
-func (g *Game) GetNowBlock() Block {
-	return g.now
-}
-
-func (g *Game) GetNextBlock() Block {
-	return g.next
-}
-
-func (g *Game) GetGhostBlock() Block {
-	ghost := &ghost{}
-	ghost.init(g.mat, g.now)
-	return ghost
-}
-
-func (g *Game) GetBoard() Board {
-	return g.mat
 }
