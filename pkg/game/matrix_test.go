@@ -10,7 +10,7 @@ import (
 var _ = Describe("matrix reset 테스트", func() {
 	type testData struct {
 		x, y     int
-		expected []cell
+		expected [][]Cell
 	}
 
 	DescribeTable("테스트 케이스", func(d testData) {
@@ -20,15 +20,15 @@ var _ = Describe("matrix reset 테스트", func() {
 		diff := deep.Equal(actual, d.expected)
 		Expect(diff).Should(BeNil())
 	},
-		Entry("2x3", testData{2, 3, []cell{
-			x, x,
-			x, x,
-			x, x,
+		Entry("2x3", testData{2, 3, [][]Cell{
+			{x, x},
+			{x, x},
+			{x, x},
 		}}),
-		Entry("4x3", testData{4, 3, []cell{
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
+		Entry("4x3", testData{4, 3, [][]Cell{
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
 		}}),
 	)
 })
@@ -37,7 +37,7 @@ var _ = Describe("matrix merge 테스트", func() {
 	type testData struct {
 		s        Shape
 		x, y     int
-		expected []cell
+		expected [][]Cell
 	}
 
 	g := matrix{width: 4, height: 10}
@@ -52,41 +52,41 @@ var _ = Describe("matrix merge 테스트", func() {
 		diff := deep.Equal(actual, d.expected)
 		Expect(diff).Should(BeNil())
 	},
-		Entry("L", testData{L, 0, 0, []cell{
-			x, x, o, x,
-			o, o, o, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
+		Entry("L", testData{L, 0, 0, [][]Cell{
+			{x, x, o, x},
+			{o, o, o, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
 		}}),
-		Entry("I", testData{I, 2, 3, []cell{
-			x, x, o, x,
-			o, o, o, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, o, o,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
+		Entry("I", testData{I, 2, 3, [][]Cell{
+			{x, x, o, x},
+			{o, o, o, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, o, o},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
 		}}),
-		Entry("O", testData{O, 3, 5, []cell{
-			x, x, o, x,
-			o, o, o, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, o, o,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
+		Entry("O", testData{O, 3, 5, [][]Cell{
+			{x, x, o, x},
+			{o, o, o, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, o, o},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
 		}}),
 	)
 })
@@ -196,8 +196,8 @@ var _ = Describe("matrix step 테스트", func() {
 var _ = Describe("matrix removeLines 테스트", func() {
 	type testData struct {
 		expected int
-		before   []cell
-		after    []cell
+		before   [][]Cell
+		after    [][]Cell
 	}
 
 	DescribeTable("테스트 케이스", func(d testData) {
@@ -211,74 +211,74 @@ var _ = Describe("matrix removeLines 테스트", func() {
 		diff := deep.Equal(g.cells, d.after)
 		Expect(diff).Should(BeNil())
 	},
-		Entry("1줄", testData{1, []cell{
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, o, x, o,
-			o, o, o, o,
-			o, o, x, o,
-		}, []cell{
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, o, x, o,
-			o, o, x, o,
+		Entry("1줄", testData{1, [][]Cell{
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, o, x, o},
+			{o, o, o, o},
+			{o, o, x, o},
+		}, [][]Cell{
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, o, x, o},
+			{o, o, x, o},
 		}}),
-		Entry("3줄", testData{3, []cell{
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			o, o, o, o,
-			o, o, o, o,
-			o, o, x, o,
-			o, o, o, o,
-		}, []cell{
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			o, o, x, o,
+		Entry("3줄", testData{3, [][]Cell{
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{o, o, o, o},
+			{o, o, o, o},
+			{o, o, x, o},
+			{o, o, o, o},
+		}, [][]Cell{
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{o, o, x, o},
 		}}),
-		Entry("4줄", testData{4, []cell{
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, o, x, x,
-			x, o, x, x,
-			o, o, o, o,
-			o, o, o, o,
-			o, o, o, o,
-			o, o, o, o,
-		}, []cell{
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, x, x, x,
-			x, o, x, x,
-			x, o, x, x,
+		Entry("4줄", testData{4, [][]Cell{
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, o, x, x},
+			{x, o, x, x},
+			{o, o, o, o},
+			{o, o, o, o},
+			{o, o, o, o},
+			{o, o, o, o},
+		}, [][]Cell{
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, x, x, x},
+			{x, o, x, x},
+			{x, o, x, x},
 		}}),
 	)
 })

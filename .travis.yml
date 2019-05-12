@@ -2,7 +2,6 @@ language: go
 go:
 - 1.12.x
 before_install:
-# Download, make and install SDL2-2.0.8 (stable)
 - |
   sudo apt-get install -y libsdl2{,-image,-mixer,-ttf,-gfx}-dev
   chmod +x ./sonar.sh
