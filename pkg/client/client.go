@@ -1,9 +1,12 @@
 package client
 
 import (
+	"fmt"
 	"github.com/veandco/go-sdl2/img"
 	"github.com/veandco/go-sdl2/sdl"
 	"lets-go-tetris/pkg/game"
+	"log"
+	"net"
 	"time"
 )
 
@@ -19,10 +22,35 @@ type Client struct {
 
 // Run 함수는 게임을 실행하는 메인 루프로 게임이 종료 될 때까지 블로킹 된다.
 func (c *Client) Run() error {
+	var conn net.Conn
+	var err error
+
+	conn, err = net.Dial("tcp", ":6000")
+	if err != nil {
+		log.Println(err)
+	}
+
+	if conn != nil {
+		go func(conn net.Conn) {
+			//writer := bufio.NewWriter(conn)
+			for {
+				s := "ping\n"
+				//writer.WriteString(s)
+
+				_, err := conn.Write([]byte(s))
+				if err != nil {
+					break
+				}
+
+				time.Sleep(time.Duration(3) * time.Second)
+				fmt.Println("send ping")
+			}
+		}(conn)
+	}
+
 	var window *sdl.Window
 	var renderer *sdl.Renderer
 	var texture *sdl.Texture
-	var err error
 
 	width := int32((c.Width + uiX) * c.CellSize)
 	height := int32(c.Height * c.CellSize)
