@@ -12,7 +12,6 @@ const (
 	Over
 )
 
-
 // Shape types of the block.
 type Shape int
 
@@ -26,7 +25,6 @@ const (
 	T
 	Z
 )
-
 
 // It's the most basic unit in tetris.
 type Cell bool

@@ -15,7 +15,7 @@ var _ = Describe("Test of matrix reset", func() {
 
 	DescribeTable("Test cases", func(d testData) {
 		m := newMatrix(d.x, d.y)
-		actual := m.GetCells()
+		actual := m.Cells()
 		diff := deep.Equal(actual, d.expected)
 		Expect(diff).Should(BeNil())
 	},
@@ -46,7 +46,7 @@ var _ = Describe("Test of matrix merge", func() {
 		t.init(shapes[d.s])
 		m.merge(&t)
 
-		actual := m.GetCells()
+		actual := m.Cells()
 		diff := deep.Equal(actual, d.expected)
 		Expect(diff).Should(BeNil())
 	},
@@ -99,7 +99,7 @@ var _ = Describe("Test of matrix collide", func() {
 		t = newTetromino(L)
 		t.y = 4
 
-		actual := m.collide(t)
+		actual := m.Collide(t)
 
 		Expect(actual).Should(Equal(false))
 	})
@@ -111,7 +111,7 @@ var _ = Describe("Test of matrix collide", func() {
 		m.merge(t)
 
 		t = newTetromino(L)
-		actual := m.collide(t)
+		actual := m.Collide(t)
 
 		Expect(actual).Should(Equal(true))
 	})
@@ -123,7 +123,7 @@ var _ = Describe("Test of matrix collide", func() {
 		t.x = 100
 		t.y = 100
 
-		actual := m.collide(t)
+		actual := m.Collide(t)
 
 		Expect(actual).Should(Equal(true))
 	})

@@ -4,7 +4,6 @@ type Color struct {
 	R, G, B, A uint8
 }
 
-
 var tileColor = &Color{0x26, 0x01, 0x19, 0xff}
 
 var ghostMask = &Color{0xff, 0xff, 0xff, 0x77}

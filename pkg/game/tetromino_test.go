@@ -18,7 +18,7 @@ var _ = Describe("tetromino initialize test", func() {
 		func(d testData) {
 			m := tetromino{}
 			m.init(d.input)
-			actual := m.GetCells()
+			actual := m.Cells()
 			diff := deep.Equal(actual, d.expected)
 			Expect(diff).Should(BeNil())
 		},
@@ -77,7 +77,7 @@ var _ = Describe("newTetromino test", func() {
 			{x, x, x, x},
 		}
 
-		actual := m.GetCells()
+		actual := m.Cells()
 		diff := deep.Equal(actual, expected)
 		Expect(diff).Should(BeNil())
 	})
@@ -95,7 +95,7 @@ var _ = Describe("rotate test", func() {
 		func(d testData) {
 			m := newTetromino(d.shape)
 			m.rotate(d.rotation)
-			actual := m.GetCells()
+			actual := m.Cells()
 			diff := deep.Equal(actual, d.expected)
 			Expect(diff).Should(BeNil())
 		},

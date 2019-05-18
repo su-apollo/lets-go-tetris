@@ -1,16 +1,4 @@
-package game_test
-
-import (
-	"testing"
-
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
-)
-
-func TestGame(t *testing.T) {
-	RegisterFailHandler(Fail)
-	RunSpecs(t, "tetris Suite")
-}
+package game
 
 /*
 var _ = Describe("matrix step 테스트", func() {

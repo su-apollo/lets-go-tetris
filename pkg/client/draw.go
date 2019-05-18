@@ -9,8 +9,8 @@ import (
 
 type draw struct {
 	renderer *sdl.Renderer
-	image *sdl.Surface
-	texture *sdl.Texture
+	image    *sdl.Surface
+	texture  *sdl.Texture
 }
 
 func (d *draw) init(window *sdl.Window) error {
@@ -188,5 +188,3 @@ func (d *draw) drawBlock(block game.Block, color Color, size int, offsetX int) {
 		}
 	}
 }
-
-
