@@ -1,6 +1,7 @@
 package client
 
 import (
+	"fmt"
 	"github.com/veandco/go-sdl2/img"
 	"github.com/veandco/go-sdl2/sdl"
 	"lets-go-tetris/pkg/game"
@@ -8,6 +9,7 @@ import (
 
 type draw struct {
 	renderer *sdl.Renderer
+	image *sdl.Surface
 	texture *sdl.Texture
 }
 
@@ -19,30 +21,51 @@ func (d *draw) init(window *sdl.Window) error {
 	if err != nil {
 		return err
 	}
-	defer d.renderer.Destroy()
 
-	image, err := img.Load("./assets/gopher.png")
+	d.image, err = img.Load("./assets/gopher.png")
 	if err != nil {
 		return err
 	}
-	defer image.Free()
 
-	d.texture, err = d.renderer.CreateTextureFromSurface(image)
+	d.texture, err = d.renderer.CreateTextureFromSurface(d.image)
 	if err != nil {
 		return err
 	}
-	defer d.texture.Destroy()
 
-	d.renderer.SetDrawBlendMode(sdl.BLENDMODE_BLEND)
-	d.renderer.Clear()
+	err = d.renderer.SetDrawBlendMode(sdl.BLENDMODE_BLEND)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	err = d.renderer.Clear()
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	return nil
 }
 
+func (d *draw) destroy() {
+	d.renderer.Destroy()
+	d.image.Free()
+	d.texture.Destroy()
+}
+
 func (d *draw) clear(width int32, height int32) {
-	d.renderer.Clear()
-	d.renderer.SetDrawColor(0, 0, 0, 0xff)
-	d.renderer.FillRect(&sdl.Rect{X: 0, Y: 0, W: width, H: height})
+	err := d.renderer.Clear()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	err = d.renderer.SetDrawColor(0, 0, 0, 0xff)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	err = d.renderer.FillRect(&sdl.Rect{X: 0, Y: 0, W: width, H: height})
+	if err != nil {
+		fmt.Println(err)
+	}
 }
 
 func (d *draw) swap() {
@@ -52,12 +75,12 @@ func (d *draw) swap() {
 func (d *draw) drawGame(game game.Game, size int) {
 	d.drawBoard(game.Board(), size)
 	d.drawBoard(game.Board(), size)
-	d.drawBlock(game.NowBlock(), size, 0)
-	d.drawBlock(game.GhostBlock(), size, 0)
+	d.drawNow(game, size)
+	d.drawGhost(game, size)
 }
 
 func (d *draw) drawUI(g game.Game, c *Client) {
-	d.drawBlock(g.NextBlock(), c.CellSize, c.Width)
+	d.drawNext(g, c)
 
 	if g.State() == game.Paused {
 		w := int32((c.Width + uiX) * c.CellSize)
@@ -68,7 +91,11 @@ func (d *draw) drawUI(g game.Game, c *Client) {
 			X: dst.W / 2,
 			Y: dst.H / 2,
 		}
-		d.renderer.CopyEx(d.texture, &src, &dst, 0, &center, 0)
+		err := d.renderer.CopyEx(d.texture, &src, &dst, 0, &center, 0)
+		if err != nil {
+			fmt.Println(err)
+		}
+
 	} else {
 		x := int32((c.Width+uiX)*c.CellSize - 86)
 		y := int32(c.Height*c.CellSize - 115)
@@ -78,7 +105,10 @@ func (d *draw) drawUI(g game.Game, c *Client) {
 			X: dst.W / 2,
 			Y: dst.H / 2,
 		}
-		d.renderer.CopyEx(d.texture, &src, &dst, 0, &center, 0)
+		err := d.renderer.CopyEx(d.texture, &src, &dst, 0, &center, 0)
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 }
 
@@ -92,21 +122,50 @@ func (d *draw) drawBoard(board game.Board, size int) {
 				color = *tileColor
 			}
 
-			d.renderer.SetDrawColor(color.R, color.G, color.B, color.A)
-			d.renderer.FillRect(&sdl.Rect{
+			err := d.renderer.SetDrawColor(color.R, color.G, color.B, color.A)
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			err = d.renderer.FillRect(&sdl.Rect{
 				X: int32(x * size),
 				Y: int32(y * size),
 				W: int32(size),
 				H: int32(size),
 			})
+			if err != nil {
+				fmt.Println(err)
+			}
 		}
 	}
 }
 
-func (d *draw) drawBlock(block game.Block, size int, offsetX int) {
+func (d *draw) drawNow(g game.Game, size int) {
+	color := colors[g.NowBlock().Shape()]
+	d.drawBlock(g.NowBlock(), color, size, 0)
+}
+
+func (d *draw) drawGhost(g game.Game, size int) {
+	color := colors[g.GhostBlock().Shape()]
+	color.R &= ghostMask.R
+	color.G &= ghostMask.G
+	color.B &= ghostMask.B
+	color.A &= ghostMask.A
+	d.drawBlock(g.GhostBlock(), color, size, 0)
+}
+
+func (d *draw) drawNext(g game.Game, c *Client) {
+	color := colors[g.GhostBlock().Shape()]
+	d.drawBlock(g.NextBlock(), color, c.CellSize, c.Width)
+}
+
+func (d *draw) drawBlock(block game.Block, color Color, size int, offsetX int) {
 	posX, posY := block.Position()
-	color := colors[block.Shape()]
-	d.renderer.SetDrawColor(color.R, color.G, color.B, color.A)
+
+	err := d.renderer.SetDrawColor(color.R, color.G, color.B, color.A)
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	posX += offsetX
 
@@ -116,13 +175,18 @@ func (d *draw) drawBlock(block game.Block, size int, offsetX int) {
 				cx := posX + x
 				cy := posY + y
 
-				d.renderer.FillRect(&sdl.Rect{
+				err = d.renderer.FillRect(&sdl.Rect{
 					X: int32(cx * size),
 					Y: int32(cy * size),
 					W: int32(size),
 					H: int32(size),
 				})
+				if err != nil {
+					fmt.Println(err)
+				}
 			}
 		}
 	}
 }
+
+

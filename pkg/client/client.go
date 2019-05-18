@@ -56,7 +56,12 @@ func (c *Client) Run() error {
 	defer window.Destroy()
 
 	c.draw = &draw{}
-	c.draw.init(window)
+	err = c.draw.init(window)
+
+	if err != nil {
+		return err
+	}
+	defer c.draw.destroy()
 
 	g := game.New(c.Width, c.Height)
 	d := game.New(c.Width, c.Height)
