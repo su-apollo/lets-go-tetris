@@ -1,36 +1,32 @@
 package game
 
-var ghostMask = &Color{0xff, 0xff, 0xff, 0x77}
-
 type ghost struct {
 	cells [][]Cell
 	x, y  int
-	color Color
+	shape Shape
 }
 
-func (g *ghost) GetCells() [][]Cell {
+func (g ghost) Cells() [][]Cell {
 	return g.cells
 }
 
-func (g *ghost) GetPosition() (int, int) {
+func (g ghost) Position() (int, int) {
 	return g.x, g.y
 }
 
-func (g *ghost) GetColor() Color {
-	return g.color
+func (g ghost) Shape() Shape {
+	return g.shape
 }
 
-func (g *ghost) init(m *matrix, t *tetromino) {
-	g.x = t.x
-	g.y = t.y
-	g.cells = t.GetCells()
-	color := t.GetColor()
-	g.color = Color{color.R & ghostMask.R, color.G & ghostMask.G, color.B & ghostMask.B, color.A & ghostMask.A}
+func (g *ghost) init(board Board, block Block) {
+	g.x, g.y = block.Position()
+	g.cells = block.Cells()
+	g.shape = block.Shape()
 
 	drop := true
 	for drop {
 		g.y++
-		drop = !m.collide(g)
+		drop = !board.Collide(g)
 	}
 	g.y--
 }

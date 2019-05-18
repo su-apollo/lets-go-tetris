@@ -25,7 +25,7 @@ var _ = Describe("Test cases for ghost init method", func() {
 			g := &ghost{}
 			g.init(m, t)
 
-			x, y := g.GetPosition()
+			x, y := g.Position()
 			Expect(x).Should(Equal(e.x))
 			Expect(y).Should(Equal(e.y))
 		},

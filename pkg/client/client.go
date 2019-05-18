@@ -2,7 +2,6 @@ package client
 
 import (
 	"fmt"
-	"github.com/veandco/go-sdl2/img"
 	"github.com/veandco/go-sdl2/sdl"
 	"lets-go-tetris/pkg/game"
 	"log"
@@ -13,19 +12,18 @@ import (
 const uiX = 4
 const uiY = 4
 
-// Client 구조체는 게임의 외형 정보를 저장한다.
+//
 type Client struct {
 	Width, Height int
 	CellSize      int
 	Title         string
+
+	draw *draw
 }
 
-// Run 함수는 게임을 실행하는 메인 루프로 게임이 종료 될 때까지 블로킹 된다.
+//
 func (c *Client) Run() error {
-	var conn net.Conn
-	var err error
-
-	conn, err = net.Dial("tcp", ":6000")
+	conn, err := net.Dial("tcp", ":6000")
 	if err != nil {
 		log.Println(err)
 	}
@@ -48,41 +46,21 @@ func (c *Client) Run() error {
 		}(conn)
 	}
 
-	var window *sdl.Window
-	var renderer *sdl.Renderer
-	var texture *sdl.Texture
-
 	width := int32((c.Width + uiX) * c.CellSize)
 	height := int32(c.Height * c.CellSize)
-	window, err = sdl.CreateWindow(c.Title, sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED, width, height, sdl.WINDOW_OPENGL)
+	window, err := sdl.CreateWindow(c.Title, sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED, width, height, sdl.WINDOW_OPENGL)
 
 	if err != nil {
 		return err
 	}
 	defer window.Destroy()
 
-	renderer, err = sdl.CreateRenderer(window, -1, sdl.RENDERER_ACCELERATED)
-
-	if err != nil {
-		return err
-	}
-	defer renderer.Destroy()
+	c.draw = &draw{}
+	c.draw.init(window)
 
 	g := game.New(c.Width, c.Height)
-	image, err := img.Load("./assets/gopher.png")
-	if err != nil {
-		return err
-	}
-	defer image.Free()
+	d := game.New(c.Width, c.Height)
 
-	texture, err = renderer.CreateTextureFromSurface(image)
-	if err != nil {
-		return err
-	}
-	defer texture.Destroy()
-
-	renderer.SetDrawBlendMode(sdl.BLENDMODE_BLEND)
-	renderer.Clear()
 	front := time.Now()
 	running := true
 
@@ -103,6 +81,7 @@ func (c *Client) Run() error {
 
 		for _, key := range keys {
 			g.HandleKey(key)
+			d.HandleKey(key)
 		}
 
 		now := time.Now()
@@ -110,81 +89,17 @@ func (c *Client) Run() error {
 		front = now
 
 		g.Update(delta.Nanoseconds())
+		d.Update(delta.Nanoseconds())
 
-		renderer.Clear()
-		renderer.SetDrawColor(0, 0, 0, 0xff)
-		renderer.FillRect(&sdl.Rect{X: 0, Y: 0, W: width, H: height})
+		c.draw.clear(width, height)
 
-		drawBoard(renderer, g.Board, c.CellSize)
-		drawBlock(renderer, g.CurrBlock, c.CellSize, 0)
-		drawBlock(renderer, g.NextBlock, c.CellSize, c.Width)
-		drawBlock(renderer, g.GetGhostBlock(), c.CellSize, 0)
+		c.draw.drawGame(g, c.CellSize)
+		c.draw.drawUI(g, c)
 
-		if g.State == game.Paused {
-			w := int32((c.Width + uiX) * c.CellSize)
-			h := int32(c.Height * c.CellSize)
-			src := sdl.Rect{W: 172, H: 230}
-			dst := sdl.Rect{X: 0, Y: 0, W: w, H: h}
-			center := sdl.Point{
-				X: dst.W / 2,
-				Y: dst.H / 2,
-			}
-			renderer.CopyEx(texture, &src, &dst, 0, &center, 0)
-		} else {
-			x := int32((c.Width+uiX)*c.CellSize - 86)
-			y := int32(c.Height*c.CellSize - 115)
-			src := sdl.Rect{W: 172, H: 230}
-			dst := sdl.Rect{X: x, Y: y, W: 86, H: 115}
-			center := sdl.Point{
-				X: dst.W / 2,
-				Y: dst.H / 2,
-			}
-			renderer.CopyEx(texture, &src, &dst, 0, &center, 0)
-		}
-
-		renderer.Present()
+		c.draw.swap()
 	}
 
 	return nil
-}
-
-func drawBoard(renderer *sdl.Renderer, board game.Board, size int) {
-	for y, line := range board.GetCells() {
-		for x := range line {
-			color := board.GetColor(x, y)
-			renderer.SetDrawColor(color.R, color.G, color.B, color.A)
-			renderer.FillRect(&sdl.Rect{
-				X: int32(x * size),
-				Y: int32(y * size),
-				W: int32(size),
-				H: int32(size),
-			})
-		}
-	}
-}
-
-func drawBlock(renderer *sdl.Renderer, block game.Block, size int, offsetX int) {
-	posX, posY := block.GetPosition()
-	color := block.GetColor()
-	renderer.SetDrawColor(color.R, color.G, color.B, color.A)
-
-	posX += offsetX
-
-	for y, line := range block.GetCells() {
-		for x, cell := range line {
-			if cell {
-				cx := posX + x
-				cy := posY + y
-
-				renderer.FillRect(&sdl.Rect{
-					X: int32(cx * size),
-					Y: int32(cy * size),
-					W: int32(size),
-					H: int32(size),
-				})
-			}
-		}
-	}
 }
 
 func sdlKeyCodeToEvent(k sdl.Keycode) (game.Msg, bool) {

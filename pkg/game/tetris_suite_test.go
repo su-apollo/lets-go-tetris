@@ -9,7 +9,7 @@ import (
 
 func TestGame(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Game Suite")
+	RunSpecs(t, "tetris Suite")
 }
 
 /*
