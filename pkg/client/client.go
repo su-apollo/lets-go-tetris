@@ -9,13 +9,9 @@ import (
 	"time"
 )
 
-const uiX = 4
-const uiY = 4
-
 //
 type Client struct {
 	Width, Height int
-	CellSize      int
 	Title         string
 
 	draw *draw
@@ -46,8 +42,8 @@ func (c *Client) Run() error {
 		}(conn)
 	}
 
-	width := int32((c.Width + uiX) * c.CellSize)
-	height := int32(c.Height * c.CellSize)
+	width := int32(c.Width)
+	height := int32(c.Height)
 	window, err := sdl.CreateWindow(c.Title, sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED, width, height, sdl.WINDOW_OPENGL)
 
 	if err != nil {
@@ -63,8 +59,8 @@ func (c *Client) Run() error {
 	}
 	defer c.draw.destroy()
 
-	g := game.New(c.Width, c.Height)
-	d := game.New(c.Width, c.Height)
+	g := game.New(game.BoardWidth, game.BoardHeight)
+	d := game.New(game.BoardWidth, game.BoardHeight)
 
 	front := time.Now()
 	running := true
@@ -98,7 +94,7 @@ func (c *Client) Run() error {
 
 		c.draw.clear(width, height)
 
-		c.draw.drawGame(g, c.CellSize)
+		c.draw.drawGame(g, cellSize)
 		c.draw.drawUI(g, c)
 
 		c.draw.swap()

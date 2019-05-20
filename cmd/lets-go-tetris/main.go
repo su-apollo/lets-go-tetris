@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	c := &client.Client{Width: 11, Height: 23, CellSize: 20, Title: "Let's go tetris!"}
+	c := &client.Client{Width: 1280, Height: 720, Title: "Let's go tetris!"}
 	err := c.Run()
 
 	if err != nil {

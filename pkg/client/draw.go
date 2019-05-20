@@ -22,7 +22,7 @@ func (d *draw) init(window *sdl.Window) error {
 		return err
 	}
 
-	d.image, err = img.Load("./assets/gopher.png")
+	d.image, err = img.Load("./assets/gopher/dancing_gopher.png")
 	if err != nil {
 		return err
 	}
@@ -82,33 +82,15 @@ func (d *draw) drawGame(game game.Game, size int) {
 func (d *draw) drawUI(g game.Game, c *Client) {
 	d.drawNext(g, c)
 
-	if g.State() == game.Paused {
-		w := int32((c.Width + uiX) * c.CellSize)
-		h := int32(c.Height * c.CellSize)
-		src := sdl.Rect{W: 172, H: 230}
-		dst := sdl.Rect{X: 0, Y: 0, W: w, H: h}
-		center := sdl.Point{
-			X: dst.W / 2,
-			Y: dst.H / 2,
-		}
-		err := d.renderer.CopyEx(d.texture, &src, &dst, 0, &center, 0)
-		if err != nil {
-			fmt.Println(err)
-		}
-
-	} else {
-		x := int32((c.Width+uiX)*c.CellSize - 86)
-		y := int32(c.Height*c.CellSize - 115)
-		src := sdl.Rect{W: 172, H: 230}
-		dst := sdl.Rect{X: x, Y: y, W: 86, H: 115}
-		center := sdl.Point{
-			X: dst.W / 2,
-			Y: dst.H / 2,
-		}
-		err := d.renderer.CopyEx(d.texture, &src, &dst, 0, &center, 0)
-		if err != nil {
-			fmt.Println(err)
-		}
+	src := sdl.Rect{X: 192, Y: 192, W: 384, H: 384}
+	dst := sdl.Rect{X: gopherX, Y: gopherY, W: 192, H: 192}
+	center := sdl.Point{
+		X: dst.W / 2,
+		Y: dst.H / 2,
+	}
+	err := d.renderer.CopyEx(d.texture, &src, &dst, 0, &center, 0)
+	if err != nil {
+		fmt.Println(err)
 	}
 }
 
@@ -155,8 +137,29 @@ func (d *draw) drawGhost(g game.Game, size int) {
 }
 
 func (d *draw) drawNext(g game.Game, c *Client) {
-	color := colors[g.GhostBlock().Shape()]
-	d.drawBlock(g.NextBlock(), color, c.CellSize, c.Width)
+	color := colors[g.NextBlock().Shape()]
+	size := cellSize
+
+	err := d.renderer.SetDrawColor(color.R, color.G, color.B, color.A)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	for y, line := range g.NextBlock().Cells() {
+		for x, cell := range line {
+			if cell {
+				err = d.renderer.FillRect(&sdl.Rect{
+					X: int32(x*size + nextX),
+					Y: int32(y*size + nextY),
+					W: int32(size),
+					H: int32(size),
+				})
+				if err != nil {
+					fmt.Println(err)
+				}
+			}
+		}
+	}
 }
 
 func (d *draw) drawBlock(block game.Block, color Color, size int, offsetX int) {
@@ -166,8 +169,6 @@ func (d *draw) drawBlock(block game.Block, color Color, size int, offsetX int) {
 	if err != nil {
 		fmt.Println(err)
 	}
-
-	posX += offsetX
 
 	for y, line := range block.Cells() {
 		for x, cell := range line {

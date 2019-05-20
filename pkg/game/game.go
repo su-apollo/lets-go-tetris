@@ -1,5 +1,10 @@
 package game
 
+const (
+	BoardWidth  = 11
+	BoardHeight = 23
+)
+
 // State is game state
 type State int
 

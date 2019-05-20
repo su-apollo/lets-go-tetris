@@ -17,3 +17,10 @@ var colors = []Color{
 	{0xba, 0x5b, 0xea, 0xff},
 	{0xd3, 0x5f, 0x5f, 0xff},
 }
+
+const cellSize = 20
+
+const nextX = 250
+const nextY = 0
+const gopherX = 210
+const gopherY = 100
