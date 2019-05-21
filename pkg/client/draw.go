@@ -11,6 +11,9 @@ type draw struct {
 	renderer *sdl.Renderer
 	image    *sdl.Surface
 	texture  *sdl.Texture
+
+	temp int64
+	i int
 }
 
 func (d *draw) init(window *sdl.Window) error {
@@ -81,9 +84,24 @@ func (d *draw) drawGame(game game.Game, size int) {
 
 func (d *draw) drawUI(g game.Game, c *Client) {
 	d.drawNext(g, c)
+}
 
-	src := sdl.Rect{X: 192, Y: 192, W: 384, H: 384}
-	dst := sdl.Rect{X: gopherX, Y: gopherY, W: 192, H: 192}
+func (d *draw) drawGopher(delta int64) {
+	d.temp += delta
+
+	if d.temp > 100000000 {
+		d.temp = 0
+		d.i++
+	}
+
+	d.i %= 24
+	w := int32(192)
+	h := int32(192)
+	x := int32(d.i % 5)
+	y := int32(d.i / 5)
+
+	src := sdl.Rect{X:x*w, Y:y*h, W: w, H: h}
+	dst := sdl.Rect{X: gopherX, Y: gopherY, W: w, H: h}
 	center := sdl.Point{
 		X: dst.W / 2,
 		Y: dst.H / 2,

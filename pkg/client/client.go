@@ -96,6 +96,7 @@ func (c *Client) Run() error {
 
 		c.draw.drawGame(g, cellSize)
 		c.draw.drawUI(g, c)
+		c.draw.drawGopher(delta.Nanoseconds())
 
 		c.draw.swap()
 	}
