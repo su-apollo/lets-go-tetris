@@ -18,13 +18,13 @@ func (m *matrix) GetCells() [][]Cell {
 func (m *matrix) GetColor(x int, y int) Color {
 	if m.cells[y][x] {
 		return m.colors[y][x]
-	} else {
-		if ((x + y) % 2) == 0 {
-			return tileColors[0]
-		} else {
-			return tileColors[1]
-		}
 	}
+
+	if ((x + y) % 2) == 0 {
+		return tileColors[0]
+	}
+
+	return tileColors[1]
 }
 
 func newMatrix(w int, h int) *matrix {

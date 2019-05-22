@@ -9,44 +9,26 @@ const startX = 3
 
 // Game 구조체는 테트리스의 전반 로직을 담당하는 자료구조다.
 type Game struct {
-	state State
-	now   *tetromino
-	next  *tetromino
-	keep  *tetromino
-	stack []Shape
-	mat   *matrix
+	State     State
+	CurrBlock *tetromino
+	NextBlock *tetromino
+	KeepBlock *tetromino
+	stack     []Shape
+	Board     *matrix
 
 	stepTimer int64
 }
 
-func (g *Game) GetState() State {
-	return g.state
-}
-
-func (g *Game) GetNowBlock() Block {
-	return g.now
-}
-
-func (g *Game) GetNextBlock() Block {
-	return g.next
-}
-
-func (g *Game) getKeepBlock() Block {
-	return g.keep
-}
-
+// GetGhostBlock 메소드는 현재 블록의 미리보기 블록을 반환한다.
 func (g *Game) GetGhostBlock() Block {
 	ghost := &ghost{}
-	ghost.init(g.mat, g.now)
+	ghost.init(g.Board, g.CurrBlock)
 	return ghost
 }
 
-func (g *Game) GetBoard() Board {
-	return g.mat
-}
-
+// HandleKey 메소드는 입력 받은 키보드 이벤트를 처리한다.
 func (g *Game) HandleKey(msg Msg) {
-	switch g.state {
+	switch g.State {
 	case Playing:
 		g.handleKeyPlaying(msg)
 		break
@@ -59,8 +41,9 @@ func (g *Game) HandleKey(msg Msg) {
 	}
 }
 
+// Update 메소드는 매 프레임을 갱신한다. 전달인자는 이전 프레임으로부터의 경과 나노초.
 func (g *Game) Update(delta int64) {
-	switch g.state {
+	switch g.State {
 	case Playing:
 		g.updatePlaying(delta)
 		break
@@ -73,20 +56,21 @@ func (g *Game) Update(delta int64) {
 	}
 }
 
+// New 함수는 Game 자료구조의 생성자다.
 func New(width int, height int) *Game {
 	g := &Game{
-		mat: &matrix{width, height, nil, nil},
+		Board: &matrix{width, height, nil, nil},
 	}
 	g.reset()
 	return g
 }
 
 func (g *Game) setNowToNext() {
-	g.now = g.next
-	g.now.x = startX
+	g.CurrBlock = g.NextBlock
+	g.CurrBlock.x = startX
 
 	s := g.popQueue()
-	g.next = newTetromino(s)
+	g.NextBlock = newTetromino(s)
 
 	if g.stack == nil {
 		g.resetStack()
@@ -95,18 +79,18 @@ func (g *Game) setNowToNext() {
 }
 
 func (g *Game) reset() {
-	g.mat.reset()
+	g.Board.reset()
 	g.resetStack()
 	g.shuffleStack()
 
 	s := g.popQueue()
-	g.now = newTetromino(s)
-	g.now.x = startX
+	g.CurrBlock = newTetromino(s)
+	g.CurrBlock.x = startX
 
 	s = g.popQueue()
-	g.next = newTetromino(s)
+	g.NextBlock = newTetromino(s)
 
-	g.state = Playing
+	g.State = Playing
 }
 
 func (g *Game) resetStack() {
@@ -127,60 +111,61 @@ func (g *Game) popQueue() Shape {
 		v := g.stack[0]
 		g.stack = nil
 		return v
-	} else {
-		v := g.stack[n-1]
-		g.stack = g.stack[:n-1]
-		return v
 	}
+
+	v := g.stack[n-1]
+	g.stack = g.stack[:n-1]
+	return v
+
 }
 
 func (g *Game) handleKeyPlaying(msg Msg) {
 	switch msg.Key {
 	case Left:
-		g.now.x--
-		if g.mat.collide(g.now) {
-			g.now.x++
+		g.CurrBlock.x--
+		if g.Board.collide(g.CurrBlock) {
+			g.CurrBlock.x++
 		}
 	case Right:
-		g.now.x++
-		if g.mat.collide(g.now) {
-			g.now.x--
+		g.CurrBlock.x++
+		if g.Board.collide(g.CurrBlock) {
+			g.CurrBlock.x--
 		}
 	case Down:
-		g.now.y++
-		if g.mat.collide(g.now) {
-			g.now.y--
+		g.CurrBlock.y++
+		if g.Board.collide(g.CurrBlock) {
+			g.CurrBlock.y--
 			g.nextStep()
 		}
 	case ClockWise:
-		r := g.now.rotateClockWise()
-		if !g.now.wallKick(g.mat, r) {
-			g.now.rotateCounterClockWise()
+		r := g.CurrBlock.rotateClockWise()
+		if !g.CurrBlock.wallKick(g.Board, r) {
+			g.CurrBlock.rotateCounterClockWise()
 		}
 	case CounterClockWise:
-		r := g.now.rotateCounterClockWise()
-		if !g.now.wallKick(g.mat, r) {
-			g.now.rotateClockWise()
+		r := g.CurrBlock.rotateCounterClockWise()
+		if !g.CurrBlock.wallKick(g.Board, r) {
+			g.CurrBlock.rotateClockWise()
 		}
 	case Drop:
 		drop := true
 		for drop {
-			g.now.y++
-			drop = !g.mat.collide(g.now)
+			g.CurrBlock.y++
+			drop = !g.Board.collide(g.CurrBlock)
 		}
-		g.now.y--
+		g.CurrBlock.y--
 		g.nextStep()
 	case Escape:
-		g.state = Over
+		g.State = Over
 	case Pause:
-		g.state = Paused
+		g.State = Paused
 	}
 }
 
 func (g *Game) handleKeyPaused(msg Msg) {
 	switch msg.Key {
 	case Pause:
-		g.state = Playing
+		g.State = Playing
 	}
 }
 
@@ -190,14 +175,14 @@ func (g *Game) handleKeyGameOver(msg Msg) {
 func (g *Game) updatePlaying(delta int64) {
 	g.stepTimer += delta
 	if g.stepTimer > g.speed() {
-		if g.step(g.mat, g.now) {
-			_ = g.mat.removeLines()
+		if g.step(g.Board, g.CurrBlock) {
+			_ = g.Board.removeLines()
 			//todo : score
 
 			g.setNowToNext()
 
-			if g.mat.collide(g.now) {
-				g.state = Over
+			if g.Board.collide(g.CurrBlock) {
+				g.State = Over
 			}
 		}
 		g.stepTimer = 0

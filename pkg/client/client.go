@@ -10,12 +10,14 @@ import (
 const uiX = 4
 const uiY = 4
 
+// Client 구조체는 게임의 외형 정보를 저장한다.
 type Client struct {
 	Width, Height int
 	CellSize      int
 	Title         string
 }
 
+// Run 함수는 게임을 실행하는 메인 루프로 게임이 종료 될 때까지 블로킹 된다.
 func (c *Client) Run() error {
 	var window *sdl.Window
 	var renderer *sdl.Renderer
@@ -85,12 +87,12 @@ func (c *Client) Run() error {
 		renderer.SetDrawColor(0, 0, 0, 0xff)
 		renderer.FillRect(&sdl.Rect{X: 0, Y: 0, W: width, H: height})
 
-		drawBoard(renderer, g.GetBoard(), c.CellSize)
-		drawBlock(renderer, g.GetNowBlock(), c.CellSize, 0)
+		drawBoard(renderer, g.Board, c.CellSize)
+		drawBlock(renderer, g.CurrBlock, c.CellSize, 0)
+		drawBlock(renderer, g.NextBlock, c.CellSize, c.Width)
 		drawBlock(renderer, g.GetGhostBlock(), c.CellSize, 0)
-		drawBlock(renderer, g.GetNextBlock(), c.CellSize, c.Width)
 
-		if g.GetState() == game.Paused {
+		if g.State == game.Paused {
 			w := int32((c.Width + uiX) * c.CellSize)
 			h := int32(c.Height * c.CellSize)
 			src := sdl.Rect{W: 172, H: 230}
