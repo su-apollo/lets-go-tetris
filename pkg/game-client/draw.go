@@ -1,4 +1,4 @@
-package client
+package game_client
 
 import (
 	"fmt"

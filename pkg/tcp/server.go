@@ -1,4 +1,4 @@
-package server
+package tcp
 
 import (
 	"bufio"
@@ -41,7 +41,7 @@ func (s *Server) Run() {
 		select {
 		case conn := <-newConnections:
 
-			log.Printf("Accepted new client, #%d", clientCount)
+			log.Printf("Accepted new game-client, #%d", clientCount)
 
 			allClients[conn] = clientCount
 			clientCount += 1

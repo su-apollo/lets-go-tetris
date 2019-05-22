@@ -1,4 +1,4 @@
-package client
+package game_client
 
 type Color struct {
 	R, G, B, A uint8

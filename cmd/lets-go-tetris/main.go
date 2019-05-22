@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
-	"lets-go-tetris/pkg/client"
+	"lets-go-tetris/pkg/game-client"
 	"os"
 )
 
 func main() {
-	c := &client.Client{Width: 1280, Height: 720, Title: "Let's go tetris!"}
+	c := &game_client.Client{Width: 1280, Height: 720, Title: "Let's go tetris!"}
 	err := c.Run()
 
 	if err != nil {
