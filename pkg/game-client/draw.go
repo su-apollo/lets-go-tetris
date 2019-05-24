@@ -13,7 +13,7 @@ type draw struct {
 	texture  *sdl.Texture
 
 	temp int64
-	i int
+	i    int
 }
 
 func (d *draw) init(window *sdl.Window) error {
@@ -100,7 +100,7 @@ func (d *draw) drawGopher(delta int64) {
 	x := int32(d.i % 5)
 	y := int32(d.i / 5)
 
-	src := sdl.Rect{X:x*w, Y:y*h, W: w, H: h}
+	src := sdl.Rect{X: x * w, Y: y * h, W: w, H: h}
 	dst := sdl.Rect{X: gopherX, Y: gopherY, W: w, H: h}
 	center := sdl.Point{
 		X: dst.W / 2,
