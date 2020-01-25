@@ -18,9 +18,16 @@ var colors = []Color{
 	{0xd3, 0x5f, 0x5f, 0xff},
 }
 
-const cellSize = 20
+const cellSize = 30
 
-const nextX = 250
+const nextX = 330
 const nextY = 0
-const gopherX = 210
+const gopherX = 315
 const gopherY = 100
+const gopherW = 150
+const gopherH = 150
+
+const atlasW = 192
+const atlasH = 192
+const atlasX = 5
+const atlasY = 5

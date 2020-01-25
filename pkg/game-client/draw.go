@@ -95,13 +95,13 @@ func (d *draw) drawGopher(delta int64) {
 	}
 
 	d.i %= 24
-	w := int32(192)
-	h := int32(192)
-	x := int32(d.i % 5)
-	y := int32(d.i / 5)
+	w := int32(atlasW)
+	h := int32(atlasH)
+	x := int32(d.i % atlasX)
+	y := int32(d.i / atlasY)
 
 	src := sdl.Rect{X: x * w, Y: y * h, W: w, H: h}
-	dst := sdl.Rect{X: gopherX, Y: gopherY, W: w, H: h}
+	dst := sdl.Rect{X: gopherX, Y: gopherY, W: gopherW, H: gopherH}
 	center := sdl.Point{
 		X: dst.W / 2,
 		Y: dst.H / 2,
